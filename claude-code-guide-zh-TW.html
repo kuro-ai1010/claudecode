@@ -1,0 +1,1537 @@
+<!doctype html><html lang="zh-Hant-TW"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Claude Code 活用集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#f6f3ee; --surface:#ffffff; --surface2:#f0ece4; --ink:#1d1a16; --muted:#625c53;
+  --line:#e0dacd; --accent:#b8481f; --accent-ink:#ffffff; --accent-soft:#f8e6dc;
+  --code:#1b1915; --code-ink:#f1ece2; --cjk:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14120f; --surface:#1c1a16; --surface2:#25221c; --ink:#f0ebe2; --muted:#a9a295;
+  --line:#322e26; --accent:#f0905f; --accent-ink:#14120f; --accent-soft:#33241b; --code:#0e0d0b; --code-ink:#f1ece2; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#14120f; --surface:#1c1a16; --surface2:#25221c; --ink:#f0ebe2; --muted:#a9a295;
+  --line:#322e26; --accent:#f0905f; --accent-ink:#14120f; --accent-soft:#33241b; --code:#0e0d0b; --code-ink:#f1ece2; color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--cjk);font-size:16px;line-height:1.8;-webkit-text-size-adjust:100%}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(16px,4vw,32px)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hero{padding-block:clamp(36px,7vw,72px) 28px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.14em;color:var(--muted);margin:0 0 16px}
+h1{font-weight:900;font-size:clamp(2.5rem,8vw,4.6rem);line-height:1.1;margin:0 0 20px;text-wrap:balance}
+.lead{max-width:36em;font-size:1.02rem;color:var(--muted);margin:0 0 26px;text-wrap:pretty}
+.three{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));margin:0;padding:0;list-style:none}
+.three li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.three b{display:block;font-size:.95rem;margin-bottom:2px}
+.three b span{font:500 11px var(--mono);color:var(--accent);margin-right:8px}
+.three p{margin:0 0 8px;font-size:.84rem;color:var(--muted)}
+.mini{display:flex;gap:8px;align-items:center;background:var(--code);color:var(--code-ink);border-radius:8px;padding:6px 6px 6px 12px}
+.mini code{flex:1;min-width:0;font:400 12px var(--mono);overflow-wrap:anywhere}
+.mini .copy{flex:none}
+
+.bar{position:relative;z-index:20;background:var(--bg);border-block:1px solid var(--line)}
+.bar-in{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding-block:10px}
+.search{flex:1 1 240px;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 12px}
+.search input{flex:1;min-width:0;border:0;background:transparent;padding:9px 0;outline:0}
+.search:focus-within{border-color:var(--accent)}
+.search svg{flex:none;color:var(--muted)}
+.tg{display:flex;gap:14px;font-size:.84rem;flex-wrap:wrap}
+.tg label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.tg input{accent-color:var(--accent)}
+.count{font:500 12px var(--mono);color:var(--muted);min-width:4.5em;text-align:right}
+.chips{flex:1 1 100%;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 14px;font-size:.84rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+@media (min-width:760px){.bar{position:sticky;top:env(safe-area-inset-top,0px)}}
+
+main{padding-block:8px 40px}
+.sec{padding-top:48px;scroll-margin-top:110px}
+.sec h2{margin:0 0 4px;font-size:1.6rem;font-weight:900;line-height:1.3;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.sec h2 small{font:500 12px var(--mono);color:var(--muted)}
+.sec-lead{margin:0 0 20px;color:var(--muted);max-width:44em;font-size:.92rem}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}
+.empty{padding:60px 0;text-align:center;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-width:0;padding:16px;gap:10px}
+.card h3{margin:0;font-size:1.05rem;font-weight:900;line-height:1.45}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font:500 10.5px/1 var(--mono);padding:3px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.badge.b2{background:var(--surface2);color:var(--muted)}
+.desc{margin:0;font-size:.9rem;text-wrap:pretty}
+.use{margin:0;font-size:.84rem;color:var(--muted);background:var(--surface2);border-radius:6px;padding:7px 10px}
+.use b{color:var(--ink);margin-right:.5em}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:0;padding:0;list-style:none}
+.tags li{font-size:.74rem;padding:0 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.codebox{margin-top:auto;background:var(--code);border-radius:8px;overflow:hidden}
+.cb-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.cb-h span{font:500 11px var(--mono);color:#a9a295;min-width:0;overflow-wrap:anywhere}
+pre{margin:0;padding:12px;font:400 12.5px/1.7 var(--mono);color:var(--code-ink);white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow-y:auto;user-select:text}
+.copy{flex:none;border:1px solid #f0905f;background:transparent;color:#f0905f;border-radius:6px;padding:2px 12px;font-size:.78rem;cursor:pointer}
+.copy:hover{background:#f0905f;color:#14120f}
+.foot{padding-block:36px 90px;color:var(--muted);font-size:.84rem}
+.foot p{margin:0 0 8px;max-width:48em}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);font-size:.84rem;padding:8px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.2s;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* ---- 新增 ---- */
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:7px 14px;font-size:.84rem;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.modehint{flex:1 1 100%;font-size:.8rem;color:var(--muted);margin:-2px 0 0}
+.viz{padding-block:8px 8px}
+.viz h2,.pick h2,.gloss h2{margin:0 0 4px;font-size:1.45rem;font-weight:900}
+.viz .sub,.pick .sub{margin:0 0 14px;color:var(--muted);font-size:.9rem;max-width:44em}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 14px;font-size:.86rem;cursor:pointer}
+.tab[aria-selected="true"]{border-color:var(--accent);color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:clamp(14px,3vw,24px);min-width:0}
+.panel[hidden]{display:none}
+.four{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.four div{background:var(--surface2);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.four .ic{width:34px;height:34px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:700 14px var(--mono)}
+.four b{font-size:1rem}
+.four .when{font:500 11px var(--mono);color:var(--accent)}
+.four p{margin:0;font-size:.86rem;color:var(--muted)}
+.four em{font-style:normal;font-size:.8rem;border-top:1px dashed var(--line);padding-top:6px;margin-top:auto}
+.treewrap{display:grid;gap:18px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+@media (max-width:760px){.treewrap{grid-template-columns:minmax(0,1fr)}}
+.tree{font:400 13px/1.9 var(--mono);margin:0;padding:0;list-style:none}
+.tree ul{list-style:none;margin:0;padding-left:18px;border-left:1px solid var(--line)}
+.tree button{border:0;background:transparent;text-align:left;padding:0 6px;border-radius:5px;cursor:pointer;font:inherit}
+.tree button:hover{background:var(--surface2)}
+.tree button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.tree .dir{color:var(--muted);padding:0 6px}
+.tree .sc{font-size:10.5px;color:var(--muted);margin-left:6px}
+.tinfo{background:var(--surface2);border-radius:10px;padding:16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.tinfo h3{margin:0;font-size:1.05rem}
+.tinfo .row{font-size:.86rem;display:flex;gap:10px}
+.tinfo .row b{flex:none;width:5.5em;color:var(--muted);font-weight:500}
+.tinfo .row span{min-width:0}
+.go{align-self:flex-start;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;padding:4px 14px;font-size:.82rem;cursor:pointer}
+.go:hover{background:var(--accent);color:var(--accent-ink)}
+.tl{display:flex;gap:0;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.tl button{flex:1 0 118px;border:0;background:transparent;padding:0 4px;cursor:pointer;text-align:center;font-size:.78rem;color:var(--muted);position:relative}
+.tl button::before{content:"";display:block;height:2px;background:var(--line);margin:13px 0 0}
+.tl button i{display:grid;place-items:center;width:28px;height:28px;margin:-15px auto 6px;border-radius:50%;background:var(--surface2);border:2px solid var(--line);font:600 12px var(--mono);font-style:normal;position:relative;color:var(--ink)}
+.tl button[aria-pressed="true"]{color:var(--ink);font-weight:700}
+.tl button[aria-pressed="true"] i{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tl button.done::before{background:var(--accent)}
+.tl button small{display:block;font:500 10.5px var(--mono);color:var(--accent)}
+.tlbox{margin-top:14px;background:var(--surface2);border-radius:10px;padding:14px 16px;font-size:.88rem;display:flex;flex-direction:column;gap:6px;min-height:7em}
+.tlbox b{font-size:1rem}
+.tlbox code{font:400 12px var(--mono);background:var(--code);color:var(--code-ink);padding:6px 10px;border-radius:6px;overflow-wrap:anywhere;display:block}
+.mcpd{display:grid;grid-template-columns:minmax(0,1fr) 60px minmax(0,1fr);align-items:center;gap:6px}
+@media (max-width:620px){.mcpd{grid-template-columns:minmax(0,1fr);}.mcpd .wire{height:40px;width:2px;margin:auto}}
+.node{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-weight:700;min-width:0}
+.node small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.svcs{display:grid;gap:6px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.svcs button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.84rem}
+.svcs button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.wire{height:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 6px,transparent 6px 12px);background-size:12px 2px;animation:flow 1s linear infinite}
+@media (max-width:620px){.wire{background:repeating-linear-gradient(180deg,var(--accent) 0 6px,transparent 6px 12px);animation:flowy 1s linear infinite}}
+@keyframes flow{to{background-position:12px 0}}@keyframes flowy{to{background-position:0 12px}}
+.mcpmsg{margin-top:14px;font-size:.88rem;background:var(--surface2);border-radius:10px;padding:12px 14px}
+.mcpmsg code{display:block;margin-top:6px;font:400 12px var(--mono);overflow-wrap:anywhere}
+/* 應用程式畫面示意 */
+.appmock{display:grid;grid-template-columns:150px minmax(0,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg);min-height:360px;font-size:.82rem}
+.appmock .side{background:var(--surface2);border-right:1px solid var(--line);padding:12px 10px;display:flex;flex-direction:column;gap:6px}
+.appmock .side b{font-size:.76rem;color:var(--muted);font-weight:500;margin-top:8px}
+.appmock .side span{padding:5px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--line)}
+.appmock .side span.on{border-color:var(--accent);color:var(--accent)}
+.appmock .main{display:flex;flex-direction:column;min-width:0;position:relative}
+.appmock .hd{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;color:var(--muted)}
+.appmock .hd span{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:1px 8px}
+.appmock .chat{flex:1;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:150px}
+.bub{max-width:88%;padding:8px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);overflow-wrap:anywhere}
+.bub.me{align-self:flex-end;background:var(--accent-soft);border-color:transparent}
+.compose{margin:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:8px 10px;position:relative}
+.compose .inp{min-height:2.2em;color:var(--muted)}
+.compose .ctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.compose button{border:1px solid var(--line);background:var(--surface2);border-radius:7px;padding:3px 10px;cursor:pointer;font-size:.8rem}
+.compose button.plus{font-weight:700;width:30px;padding:3px 0}
+.compose button.send{margin-left:auto;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.compose button.mode{border-color:var(--accent);color:var(--accent)}
+.menu{position:absolute;left:8px;bottom:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column;gap:2px;z-index:5;min-width:190px}
+.menu button{text-align:left;border:0;background:transparent;padding:6px 10px;border-radius:6px}
+.menu button:hover{background:var(--accent-soft)}
+.menu[hidden]{display:none}
+.hint{font-size:.8rem;color:var(--muted);margin:10px 0 0}
+.steps2{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));counter-reset:s}
+.steps2 li{counter-increment:s;background:var(--surface2);border-radius:8px;padding:10px 12px 10px 38px;position:relative;font-size:.84rem}
+.steps2 li::before{content:counter(s);position:absolute;left:10px;top:10px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 11px var(--mono)}
+/* 從想做的事找起 */
+.pick{padding-block:30px 6px}
+.goals{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.goals button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.88rem}
+.goals button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.ans{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:.9rem;display:flex;flex-direction:column;gap:8px}
+.ans .lk{display:flex;gap:8px;flex-wrap:wrap}
+/* 卡片的追加元素 */
+.badge.warn{background:#fdecc8;color:#7a4b00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge.warn{background:#3d2d0c;color:#f5c66d}}
+.appnote{display:none;margin:0;font-size:.82rem;background:var(--accent-soft);border-radius:6px;padding:7px 10px}
+.appnote b{color:var(--accent);margin-right:.5em}
+body[data-mode="app"] .appnote{display:block}
+.flow{display:flex;flex-wrap:wrap;gap:4px 2px;align-items:center;margin:0;padding:0;list-style:none}
+.flow li{font-size:.76rem;background:var(--accent-soft);color:var(--accent);padding:2px 10px;border-radius:999px}
+.flow li+li::before{content:"▶";font-size:.6rem;margin-right:6px;color:var(--muted)}
+.flow li+li{background:transparent;padding-left:0;color:var(--ink)}
+.flow li+li span{background:var(--accent-soft);color:var(--accent);padding:2px 10px;border-radius:999px}
+.runbtn{align-self:flex-start;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:6px;padding:3px 12px;font-size:.8rem;cursor:pointer;display:flex;gap:6px;align-items:center}
+.runbtn:hover,.runbtn[aria-expanded="true"]{background:var(--accent);color:var(--accent-ink)}
+.sim{background:#16140f;color:#f1ece2;border-radius:8px;padding:12px;font:400 12.5px/1.7 var(--mono);display:flex;flex-direction:column;gap:6px;min-height:4.5em;overflow:hidden}
+.sim[hidden]{display:none}
+.sim .l{overflow-wrap:anywhere;white-space:pre-wrap;animation:in .25s ease both}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+.sim .u{color:#fff}.sim .u::before{content:"> ";color:#f0905f}
+.sim .a{color:#c9c2b4}.sim .a::before{content:"● ";color:#7bd88f}
+.sim .o{color:#cfc8ba;padding-left:1.4em}
+.sim .d{background:#fff;color:#1d1a16;border-radius:8px;padding:10px 12px;font-family:var(--cjk);font-size:.82rem;line-height:1.7}
+.sim .cur{display:inline-block;width:7px;height:1em;background:#f0905f;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+body[data-mode="app"] .sim{background:var(--surface2);color:var(--ink);font-family:var(--cjk);font-size:.84rem}
+body[data-mode="app"] .sim .u{align-self:flex-end;background:var(--accent-soft);color:var(--ink);padding:6px 12px;border-radius:12px;max-width:92%}
+body[data-mode="app"] .sim .u::before{content:""}
+body[data-mode="app"] .sim .a{color:var(--muted);font-size:.78rem}
+body[data-mode="app"] .sim .a::before{color:var(--accent)}
+body[data-mode="app"] .sim .o{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink);font-family:var(--mono);font-size:.78rem}
+.gloss{padding-block:50px 10px}
+.gl{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));margin:12px 0 0}
+.gl div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.gl dt{font-weight:900;margin:0 0 2px}
+.gl dd{margin:0;font-size:.86rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.wire{animation:none}.sim .l{animation:none}}
+.hero .seg{display:inline-flex}@media (max-width:620px){.appmock{grid-template-columns:minmax(0,1fr)}.appmock .side{display:none}}.applead{margin:0 0 18px;max-width:46em}
+
+/* ---- 圖解與圖示（細線，單一強調色） ---- */
+.ic{display:block;flex:none}
+.hic{display:inline-grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:12px;color:var(--accent);background:linear-gradient(180deg,var(--surface),var(--surface2));align-self:center}
+.sec h2{align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.chip .ic{opacity:.85}
+.dg{display:flex;align-items:flex-start;margin:0 0 22px;padding:20px clamp(12px,3vw,28px);background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.dgn{flex:0 1 170px;text-align:center;min-width:0}
+.dgi{width:56px;height:56px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;margin:0 auto 9px;color:var(--accent);background:var(--surface);animation:lit 5.6s ease-in-out infinite;animation-delay:calc(var(--i)*.9s)}
+.dgn b{display:block;font-size:.9rem;line-height:1.4}
+.dgn small{display:block;font-size:.76rem;color:var(--muted);line-height:1.5;margin-top:1px}
+.dgl{flex:1 1 24px;height:1px;background:var(--line);margin-top:28px;position:relative;min-width:18px}
+.dgl::after{content:"";position:absolute;top:-2px;left:0;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:0;animation:run 5.6s ease-in-out infinite;animation-delay:calc(var(--d)*.9s - .5s)}
+@keyframes lit{0%,26%,100%{box-shadow:0 0 0 0 transparent;border-color:var(--line)}6%,16%{box-shadow:0 0 0 7px var(--accent-soft);border-color:var(--accent)}}
+@keyframes run{0%{left:0;opacity:0}4%{opacity:1}14%{left:calc(100% - 5px);opacity:1}18%,100%{left:calc(100% - 5px);opacity:0}}
+@media (max-width:620px){.dg{flex-direction:column;align-items:stretch;gap:0;padding:14px}.dgn{flex:none;display:grid;grid-template-columns:48px 1fr;column-gap:12px;text-align:left;align-items:center}.dgn .dgi{grid-row:1/3;width:44px;height:44px;margin:0}.dgl{flex:none;width:1px;min-width:0;height:14px;margin:0 0 0 22px}.dgl::after{display:none}}
+.four .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);color:var(--accent)}
+.four .ic svg{display:block}
+.four div:hover .ic{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.four div{transition:transform .25s}.four div:hover{transform:translateY(-2px)}
+/* 新增分頁 */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr);align-items:stretch;gap:8px}
+@media (max-width:760px){.stage{grid-template-columns:minmax(0,1fr)}.sk-arrow{transform:rotate(90deg);margin:auto}}
+.sk-arrow{color:var(--muted);display:grid;place-items:center}
+.chipbox{height:100%;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:140px;opacity:.25;transform:translateY(6px);transition:opacity .5s,transform .5s,border-color .5s}
+.chipbox i{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:600 11px var(--mono);font-style:normal;display:grid;place-items:center}
+.chipbox b{font-size:.92rem}
+.chipbox code{font:400 12px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.sheet{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.sheet span{height:6px;border-radius:3px;background:var(--line);width:0;transition:width .8s}
+.outline{display:flex;flex-direction:column;gap:6px}
+.outline em{font-style:normal;font-size:.82rem;border-left:2px solid var(--accent);padding:1px 0 1px 8px;opacity:0;transform:translateX(-6px);transition:.5s}
+.stage .sk-arrow svg{opacity:.35}
+.stage.run .sk-a .chipbox{opacity:1;transform:none;transition-delay:.1s;border-color:var(--accent)}
+.stage.run .sk-b .chipbox{opacity:1;transform:none;transition-delay:1.2s;border-color:var(--accent)}
+.stage.run .sk-c .chipbox{opacity:1;transform:none;transition-delay:3s;border-color:var(--accent)}
+.stage.run .sheet span:nth-child(1){width:92%;transition-delay:1.5s}.stage.run .sheet span:nth-child(2){width:70%;transition-delay:1.8s}.stage.run .sheet span:nth-child(3){width:84%;transition-delay:2.1s}.stage.run .sheet span:nth-child(4){width:52%;transition-delay:2.4s}
+.stage.run .outline em:nth-child(1){opacity:1;transform:none;transition-delay:3.3s}.stage.run .outline em:nth-child(2){opacity:1;transform:none;transition-delay:3.7s}.stage.run .outline em:nth-child(3){opacity:1;transform:none;transition-delay:4.1s}
+.stage.run .sk-arrow svg{opacity:1;color:var(--accent);transition:opacity .4s 1s}
+.gauge{margin:6px 0 16px}
+.gbar{position:relative;height:26px;border-radius:13px;background:var(--surface2);border:1px solid var(--line);overflow:hidden}
+.gbar i{position:absolute;left:0;top:0;bottom:0;width:12%;border-radius:13px;background:linear-gradient(90deg,var(--accent-soft),var(--accent));transition:width .8s cubic-bezier(.2,.7,.2,1),filter .4s}
+.gbar i.mid{filter:saturate(1.2) brightness(1)}.gbar i.hi{background:linear-gradient(90deg,#e0a15a,#c0392b)}
+.gbar span{position:absolute;right:12px;top:0;bottom:0;display:grid;place-items:center;font:500 12px var(--mono)}
+.gmarks{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);margin-top:6px}
+.gbtns{display:flex;gap:8px;flex-wrap:wrap}
+.modes{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
+.modes button{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px;transition:border-color .2s,transform .2s}
+.modes button:hover{transform:translateY(-2px)}
+.modes button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.modes small{color:var(--muted);font-size:.78rem}
+.bars{display:flex;gap:3px;margin-top:8px}
+.bars i{flex:1;height:4px;border-radius:2px;background:var(--line)}.bars i.on{background:var(--accent)}
+.subd{display:flex;flex-direction:column;gap:14px}
+.lane b{display:block;font-size:.82rem;margin-bottom:6px}
+.track{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;height:42px}
+.track span{border-radius:8px;display:grid;place-items:center;font-size:.76rem;background:var(--surface2);border:1px solid var(--line);opacity:.35;animation:step 7s infinite;padding:0 4px;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.track .m1{grid-column:1;animation-delay:0s}.track .m2{grid-column:2/6;border-style:dashed;animation-delay:.8s;animation-duration:7s}.track .m3{grid-column:6;animation-delay:5.2s}
+.alt .track .s1{grid-column:2;animation-delay:1s}.alt .track .s2{grid-column:3/5;animation-delay:2.4s}.alt .track .s3{grid-column:5;animation-delay:4s}
+@keyframes step{0%{opacity:.3}6%,24%{opacity:1;border-color:var(--accent);background:var(--accent-soft)}34%,100%{opacity:.3}}
+/* 組合配方的流程 */
+.flow li{animation:sweep 6s ease-in-out infinite;animation-delay:calc(var(--k,0)*.7s)}
+@keyframes sweep{0%,18%,100%{opacity:.55}6%,12%{opacity:1}}
+/* 進場動畫 */
+.card{transition:border-color .2s,transform .25s,box-shadow .25s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 10px 28px -16px rgba(0,0,0,.35)}
+.rv{opacity:0;transform:translateY(10px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.dgi,.dgl::after,.track span,.flow li{animation:none}.dgl::after{display:none}.rv{opacity:1;transform:none}.chipbox,.outline em{opacity:1;transform:none}.sheet span{width:80%}}
+
+/* ---- 新手專用 ---- */
+.what,.route{padding-block:34px 4px}
+.what h2,.route h2{margin:0 0 6px;font-size:1.5rem;font-weight:900}
+.what .sub,.route .sub{margin:0 0 16px;color:var(--muted);max-width:46em}
+.five{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin:0;padding:0;list-style:none}
+.five li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.five .fi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--accent);border:1px solid var(--line);background:linear-gradient(180deg,var(--surface),var(--surface2));margin-bottom:6px}
+.five b{font-size:1.02rem}.five em{font-style:normal;font-weight:700;font-size:.88rem}.five small{color:var(--muted);font-size:.8rem}
+.routel{margin:0;padding:0;list-style:none;display:grid;gap:0;max-width:760px;position:relative}
+.rt{display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;padding-bottom:18px;position:relative}
+.rt::before{content:"";position:absolute;left:17px;top:36px;bottom:0;width:1px;background:var(--line)}
+.rt:last-child::before{display:none}
+.rn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:600 14px var(--mono)}
+.rb b{display:block;font-size:1.02rem;line-height:1.5;margin-top:4px}
+.rb p{margin:0 0 8px;font-size:.88rem;color:var(--muted)}
+.badge.lv1{background:#dff3e4;color:#1d6b35}.badge.lv2{background:#e3ecfb;color:#2a4f9c}.badge.lv3{background:#efe3f7;color:#6a2f8c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge.lv1{background:#193524;color:#7fd69b}:root:not([data-theme="light"]) .badge.lv2{background:#1c2a46;color:#8fb2f0}:root:not([data-theme="light"]) .badge.lv3{background:#2c1d3a;color:#c79bea}}
+pre.col{max-height:11.5em;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.more{display:block;width:100%;border:0;border-top:1px solid rgba(255,255,255,.08);background:transparent;color:#f0905f;padding:8px;font-size:.8rem;cursor:pointer}
+.runbtn{background:var(--accent-soft);font-weight:700;padding:6px 14px}
+.desc{font-size:.95rem}
+.card h3{font-size:1.1rem}
+</style>
+<header class="hero"><div class="wrap">
+  <p class="kicker">CLAUDE CODE / SKILLS / PLUGINS / MCP</p>
+  <h1>Claude Code<br>活用集</h1>
+  <p class="lead">收錄 145 則可以直接複製使用的經典用法。同時支援終端機版與桌面應用程式，還能看到實際執行的樣子。</p>
+  <div class="seg" id="seg0" role="group" aria-label="使用環境"><button data-m="term" aria-pressed="true">用終端機使用</button><button data-m="app" aria-pressed="false">用桌面應用程式使用</button></div>
+  <ul class="three" id="three" style="margin-top:18px"></ul>
+</div></header>
+<section class="wrap what" id="what"><h2>什麼是 Claude Code</h2><p class="sub">用中文下指令，它就會讀取、撰寫、整理電腦資料夾裡的檔案，是一位 AI 工作夥伴。不只寫程式的人能用，會議記錄、簡報資料、資料整理也都派得上用場。只要先記住下面這 5 個詞，就能看懂這個頁面。</p><ul class="five" id="five"></ul></section>
+<section class="wrap route" id="routesec"><h2>新手路線</h2><p class="sub">從上往下依序做，基本功就都學會了。只要複製貼上就好。</p><ol class="routel" id="route"></ol></section>
+<section class="wrap pick" id="pick"><h2>從想做的事找起</h2><p class="sub">選出符合的項目，就能知道該用哪個功能、去哪裡看。</p><div class="goals" id="goals"></div><div class="ans" id="ans"></div></section>
+<section class="wrap viz" id="viz"><h2>看懂運作方式</h2><p class="sub">光看文字不容易懂的部分，做成了可以動手操作的圖。</p>
+  <div class="tabs" role="tablist" id="tabs"></div><div id="panels"></div>
+</section>
+<div class="bar" id="barTop"><div class="wrap bar-in">
+  <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="例如 會議記錄 / MCP / hook / 週報" aria-label="搜尋"></label>
+  <div class="seg" id="seg1" role="group" aria-label="使用環境"><button data-m="term" aria-pressed="true">終端機</button><button data-m="app" aria-pressed="false">應用程式</button></div>
+  <div class="tg"><label><input type="checkbox" id="f-biz"> 適合非工程師</label><label><input type="checkbox" id="f-lv"> 適合新手</label><label><input type="checkbox" id="f-hot"> 只看經典</label></div>
+  <span class="count" id="cnt"></span>
+  <div class="chips" id="chips"></div>
+</div></div>
+<main class="wrap" id="main"></main>
+<section class="wrap gloss" id="gloss"><h2>用語小辭典</h2><dl class="gl" id="gl"></dl></section>
+<footer class="wrap foot">
+  <p>內容依據 2026 年 10 月時點的官方文件整理。指令名稱與畫面會隨版本改變，若無法執行，請用 /help 與 /doctor 確認。</p>
+  <p>外掛的安裝指令與 MCP 的連線位置，可能因提供方的調整而變動。若不順利，請查看提供方的最新說明。</p>
+  <p>金鑰與 token 請把「這裡放金鑰」的部分換成自己的，並且不要給別人看。自動執行時，請替可用的工具與預算設下上限，重要的資料要先備份。</p>
+  <p>畫面示意與模擬是為了說明運作而重現的版本，細節與實際畫面會有差異。</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script>
+var CATS=[['start','開始使用'],['slash','內建指令'],['plugin','熱門外掛'],['skill-biz','技能（業務）'],['skill-dev','技能（開發）'],['agent','子代理'],['mcp','MCP 連線'],['hook','Hook'],['config','CLAUDE.md、設定'],['auto','自動化、定期執行'],['prompt','好用的提示詞'],['key','快速鍵'],['recipe','組合配方'],['trouble','遇到問題時']];
+var I=[];
+function A(c,t,en,d,u,code,o){o=o||{};I.push({c:c,t:t,en:en,d:d,u:u,code:code,path:o.path||'',lang:o.lang||'',biz:!!o.biz,hot:!!o.hot,tags:o.tags||[],chk:!!o.chk,flow:o.flow||null})}
+
+/* ===== 開始使用 ===== */
+A('start','安裝（macOS、Linux、WSL）','install','官方的安裝指令碼。裝好之後，只要輸入 claude 就能啟動。','只要做第一次。啟動後會在瀏覽器登入。',
+`curl -fsSL https://claude.ai/install.sh | bash`,{lang:'sh',biz:1,hot:1});
+A('start','安裝（Windows PowerShell）','install','PowerShell 專用的官方安裝程式。','用 Windows 的人請看這個。',
+`irm https://claude.ai/install.ps1 | iex`,{lang:'sh',biz:1});
+A('start','在專案中啟動','claude','先切換到想作業的資料夾再啟動。這個資料夾就是作業範圍。','想讓它只在「這個資料夾裡」作業的時候，例如資料夾、部落格稿件、程式碼等。',
+`cd ~/Documents/my-project
+claude`,{lang:'sh',biz:1,hot:1});
+A('start','最先輸入的 /init','/init','讀取資料夾內容，為 CLAUDE.md（給 Claude 的交接筆記）擬出草稿。','不用每次都重複同樣的說明。做好之後再用自己的話修改，準確度會更高。',
+`/init`,{lang:'',biz:1,hot:1});
+A('start','用提問讓它掌握內容','prompt','不要一開始就讓它動手，先請它說明整體樣貌，這是經典的第一步。','接手的案子、別人的資料夾、很久沒碰的專案，想先掌握內容時。',
+`請用新手也看得懂的方式，說明這個資料夾的結構與主要檔案的用途。最後列出 3 個「如果要先動手，從這裡開始」的地方。`,{lang:'',biz:1});
+A('start','接續上次繼續','claude -c / -r','延續上一次的對話來啟動（-c），或從過去的對話清單中選一個來繼續（-r）。','要接著昨天的工作繼續做的時候。',
+`claude -c      # 繼續剛剛的對話
+claude -r      # 從過去的對話中選擇`,{lang:'sh',biz:1});
+A('start','查看說明','/help','顯示可用指令的清單。','不知道怎麼辦的時候，先用這個。你自己做的技能也會出現在這裡。',
+`/help`,{lang:'',biz:1});
+
+/* ===== 內建指令 ===== */
+A('slash','/clear 重置對話','/clear','清空對話記錄，重新開始。','換話題的時候一定要用。留著無關的記錄，準確度與成本都會變差。',
+`/clear`,{biz:1,hot:1,tags:['上下文管理']});
+A('slash','/compact 摘要並壓縮對話','/compact','把變長的對話摘要起來，騰出空間。可以用參數指定要保留的重點。','長時間作業到一半覺得吃力的時候。',
+`/compact 請務必保留已修改的檔案清單，以及尚未解決的 TODO`,{biz:1,hot:1,tags:['上下文管理']});
+A('slash','/context 查看使用狀況','/context','把上下文（記憶容量）用了多少視覺化呈現。','覺得反應變慢、變得健忘時就來確認。',
+`/context`,{biz:1,tags:['上下文管理']});
+A('slash','/rewind 倒回','/rewind','把對話或檔案變更還原到過去的時間點。按兩下 Esc 也能開啟。','AI 往奇怪的方向走時，可以在壞掉之前倒回來。',
+`/rewind`,{biz:1,hot:1,tags:['安全']});
+A('slash','/btw 順便問一下','/btw','不打斷目前的作業，問一個小問題。','作業中想問「這個詞是什麼？」的時候。不會留在記錄裡。',
+`/btw 這個指令的選項是什麼意思？`,{biz:1});
+A('slash','/model 切換模型','/model','切換要使用的模型。','困難的設計用高性能模型，單純的作業用輕量模型來省錢。',
+`/model`,{biz:1,tags:['成本']});
+A('slash','/memory 編輯記憶','/memory','開啟並編輯 CLAUDE.md 等 Claude 會讀取的記憶檔案。','想把「今後請這樣做」變成長期規則的時候。',
+`/memory`,{biz:1});
+A('slash','/mcp 管理外部工具連線','/mcp','查看 MCP 伺服器連線狀況，並進行登入（OAuth）的畫面。','連上 Notion 或 GitHub 之後的認證就在這裡。',
+`/mcp`,{biz:1,hot:1});
+A('slash','/hooks 查看 Hook','/hooks','列出已登錄的 Hook。','用來檢查自動處理有沒有生效。',
+`/hooks`);
+A('slash','/permissions 權限設定','/permissions','設定哪些操作免確認就允許，哪些要禁止。','想減少每次都出現的「要允許嗎？」的時候。',
+`/permissions`,{biz:1,tags:['安全']});
+A('slash','/plugin 管理外掛','/plugin','開啟外掛與市集，進行搜尋、安裝、移除。','要裝入別人做好的整套技能時。',
+`/plugin`,{biz:1,hot:1});
+A('slash','/skills 技能清單','/skills','列出可用的技能。','確認自己做的技能有沒有被辨識到。',
+`/skills`,{biz:1});
+A('slash','/code-review（/review）程式碼審查','/code-review','指定目前的差異或 PR 編號來做審查。/review 是同樣功能的別名。','提交前的自我檢查。',
+`/review`,{tags:['開發']});
+A('slash','/simplify 整理並精簡','/simplify','重新檢視最近的變更，整理重複與多餘的部分。','想減少 AI 寫出的程式碼「加太多」的時候。',
+`/simplify`,{tags:['開發']});
+A('slash','/batch 平行處理大量同類作業','/batch','把同一種變更平行套用到大量檔案。','統一所有檔案的寫法、批次重新命名、搬遷作業。',
+`/batch 把所有 .js 檔案裡的 var 改成 const / let`,{tags:['開發']});
+A('slash','/loop 重複執行','/loop','每隔一段時間重複同一個指令。','用在像「每 5 分鐘看一次部署狀況」這種站崗的工作。',
+`/loop 5m 確認部署狀態，如果失敗就告訴我原因`,{biz:1,hot:1,tags:['自動化']});
+A('slash','/schedule 定期執行（雲端）','/schedule','建立在雲端執行的定期任務（routine）。就算關掉電腦也會照常運作。','每天早上的新聞摘要、每週的統計報告。',
+`/schedule`,{biz:1,hot:1,tags:['自動化']});
+A('slash','/goal 設定目標並讓它跑下去','/goal','先訂好達成條件，讓它自主持續做到滿足為止。','適合像「直到測試全部通過為止」這種終點很明確的作業。',
+`/goal 持續修正，直到測試全部通過`,{tags:['自動化']});
+A('slash','/cost、/usage 查看用量','/usage','查看 token 與成本的使用狀況。','用來掌握有沒有用太多。',
+`/usage`,{biz:1,tags:['成本']});
+A('slash','/doctor 環境診斷','/doctor','診斷安裝與設定上的問題。','無法執行、沒有更新等出問題的時候。',
+`/doctor`,{biz:1});
+A('slash','/resume 繼續過去的對話','/resume','選擇過去的工作階段繼續。','隔天要接手作業的時候。',
+`/resume`,{biz:1});
+A('slash','/export 匯出對話','/export','把對話內容匯出成檔案或剪貼簿。','當作會議記錄，或是保存作業紀錄。',
+`/export`,{biz:1});
+A('slash','/install-github-app 串接 GitHub','/install-github-app','安裝後就能在 GitHub 上用 @claude 呼叫它的設定精靈。','想讓它在 PR 或 Issue 上自動審查、修正的時候。',
+`/install-github-app`,{tags:['開發','自動化']});
+A('slash','/agents 管理專門代理','/agents','查看並建立子代理。畫面行為會因版本而異。','想建立審查專用等分身的時候。',
+`/agents`,{tags:['開發']});
+A('slash','/config 設定畫面','/config','開啟佈景主題、通知、模型等設定。','想改變外觀或行為的時候。',
+`/config`,{biz:1});
+/* ===== 技能（業務） ===== */
+A('skill-biz','技能的做法（基本款）','SKILL.md','技能就只是「資料夾 + SKILL.md」。存放位置不同，生效範圍也不同。這是所有技能的基礎。','自己用的放在 ~/.claude/skills/名稱/SKILL.md，專案共用的放在 .claude/skills/名稱/SKILL.md。存好之後就能用 /名稱 呼叫。',
+`---
+name: my-skill
+description: 用 1～2 句話寫這是什麼時候用的技能。Claude 會讀這裡來判斷要不要自動使用
+---
+
+在這裡寫步驟。
+$ARGUMENTS 會放入你在 / 之後輸入的字串。`,{path:'~/.claude/skills/my-skill/SKILL.md',lang:'md',biz:1,hot:1});
+A('skill-biz','會議記錄整理 /minutes','/minutes','把逐字稿或潦草的筆記，整理成決議事項、待辦、負責人與期限。','開完會馬上貼上就好。Zoom 的逐字稿也能用。',
+`---
+name: minutes
+description: 把會議筆記或逐字稿整理成會議記錄。被要求整理會議記錄、整理筆記時使用
+argument-hint: [筆記內容 或 檔名]
+disable-model-invocation: true
+---
+
+請把下面的會議筆記整理成會議記錄。輸入內容是 $ARGUMENTS。如果是檔名，請讀取檔案。
+
+輸出格式
+1. 會議概要（若知道日期時間與出席者就寫上）
+2. 決議事項（條列）
+3. 待辦事項（負責人 / 期限 / 內容 的表格）
+4. 未決與延後處理的事項
+5. 到下次會議前需要確認的事
+
+規則
+- 不要補上發言中沒有的內容。不清楚的負責人或期限就寫「未定」
+- 省略冗長的閒聊
+- 最後列出筆記中意思模糊的地方`,{path:'~/.claude/skills/minutes/SKILL.md',lang:'md',biz:1,hot:1,tags:['會議']});
+A('skill-biz','自動產生週報 /weekly-report','/weekly-report','從日報資料夾或筆記，整理一週的成果、問題與下週的計畫。','週末執行。可以給檔名，或讓它讀資料夾裡的筆記。',
+`---
+name: weekly-report
+description: 從一週份的筆記或日報製作週報。被要求寫週報、做回顧時使用
+argument-hint: [日報資料夾 或 期間]
+disable-model-invocation: true
+---
+
+請讀取 $ARGUMENTS 中本週的記錄並撰寫週報。若沒有指定，就以目前資料夾中最新的檔案為對象。
+
+架構
+- 本週成果（有數字一定要寫進去）
+- 順利的地方 / 卡關的地方
+- 下週計畫（附優先順序）
+- 想跟主管討論的事
+
+規則
+- 以事實為基礎來寫，不要誇大
+- 約 300～500 字。以條列為主，方便閱讀`,{path:'~/.claude/skills/weekly-report/SKILL.md',lang:'md',biz:1,hot:1,tags:['回報']});
+A('skill-biz','競品與市場調查 /research','/research','給它主題，它就會反覆搜尋網路，附上出處整理成報告。','用在尋找新事業的點子、調查競爭對手的價格、提案前的功課。',
+`---
+name: research
+description: 針對指定主題上網調查，整理成附出處的報告。被要求調查、研究、比較競品時使用
+argument-hint: [調查主題]
+disable-model-invocation: true
+---
+
+請針對「$ARGUMENTS」進行調查。
+
+步驟
+1. 用搜尋收集多個資訊來源（以官方資訊為優先，並確認日期）
+2. 把事實與推測分開記下來
+3. 依照下列架構撰寫報告
+
+架構
+- 結論（3 行）
+- 主要事實（附出處網址）
+- 比較表（若適用）
+- 不確定之處，以及需要另外確認的事
+
+規則
+- 沒有出處的數字不要寫
+- 舊的資訊要標明日期`,{path:'~/.claude/skills/research/SKILL.md',lang:'md',biz:1,hot:1,tags:['調查']});
+A('skill-biz','文章改寫 /rewrite','/rewrite','把文章改寫成指定的文風與讀者對象。','用在部落格、電子報、社群貼文的潤稿。',
+`---
+name: rewrite
+description: 把文章改寫得更好讀。被要求改寫、潤稿、統一文風時使用
+argument-hint: [檔名 或 本文]
+disable-model-invocation: true
+---
+
+請改寫 $ARGUMENTS 的文章。
+
+方針
+- 一句話要短（以 60 字以內為準）
+- 主詞與結論先講
+- 不要讓同樣的句型連續出現 3 次
+- 不改變意思，也不添加事實
+
+輸出包含「改寫後的全文」與「修改重點摘要（最多 3 點）」兩部分。
+如果是檔案，不要覆蓋原檔，而是另存為檔名結尾加上 _rewrite 的新檔案。`,{path:'~/.claude/skills/rewrite/SKILL.md',lang:'md',biz:1,tags:['文章']});
+A('skill-biz','回信草稿 /reply','/reply','貼上收到的信，就會依語氣做出幾種回信方案。','給客戶的有禮回覆、婉拒的文字等。',
+`---
+name: reply
+description: 為收到的信件撰寫回信。被要求回信、寫信件草稿時使用
+argument-hint: [收到的信件內文]
+disable-model-invocation: true
+---
+
+請為下面這封信寫出 3 種回信方案。
+
+$ARGUMENTS
+
+方案 A 禮貌且標準 / 方案 B 簡潔 / 方案 C 緩和關係
+- 也要附上主旨
+- 對方的問題要全部回答
+- 如果回信所需的資訊不足，先在開頭以「想確認的事項」列出來`,{path:'~/.claude/skills/reply/SKILL.md',lang:'md',biz:1,tags:['郵件']});
+A('skill-biz','整理 CSV、試算表資料 /clean-data','/clean-data','找出寫法不一致、重複與空白，另存成乾淨的 CSV。','用在客戶名單、問卷結果、費用資料的前置整理。',
+`---
+name: clean-data
+description: 偵測 CSV 或 Excel 中寫法不一致、重複、缺漏的地方，並輸出整理後的資料。被要求整理資料、合併重複名稱時使用
+argument-hint: [檔名]
+disable-model-invocation: true
+---
+
+請讀取 $ARGUMENTS，並依下列順序作業。
+
+1. 依欄位統計缺漏、重複、寫法不一致（全形半角、簡稱、空格）並回報
+2. 提出修正規則的方案，等我確認
+3. 核准後，不要動原始檔案，另存成檔名開頭加上 cleaned_ 的新檔案
+4. 另外用一個檔案留下變更紀錄，記載修改了哪幾列、怎麼改的
+
+規則：絕對不要覆蓋原始資料。不要憑推測填入數值。`,{path:'~/.claude/skills/clean-data/SKILL.md',lang:'md',biz:1,hot:1,tags:['資料']});
+A('skill-biz','發票、收據的資料夾分類 /sort-files','/sort-files','讀取資料夾裡的 PDF 與圖片，先做出依年月、往來對象整理的計畫，再執行。','下載資料夾太亂的時候、整理會計資料。',
+`---
+name: sort-files
+description: 依內容為資料夾中的檔案分類並重新命名。被要求整理檔案時使用
+argument-hint: [資料夾名稱]
+disable-model-invocation: true
+---
+
+請整理 $ARGUMENTS 裡的檔案。
+
+1. 先確認清單與每個檔案的內容，列出「移動前 → 移動後」的對照表
+2. 命名規則是 YYYY-MM-DD_往來對象_內容.副檔名
+3. 在我回答「執行」之前，不要移動檔案
+4. 執行後，把與原檔名的對照存成 CSV，絕對不要刪除任何東西`,{path:'~/.claude/skills/sort-files/SKILL.md',lang:'md',biz:1,tags:['整理']});
+A('skill-biz','大量產出社群貼文 /sns','/sns','從一個素材，做出適合 X、Instagram、LINE 的貼文方案。','部落格發布後的宣傳文，或是用一支影片做出多則貼文的時候。',
+`---
+name: sns
+description: 從素材做出各社群平台用的貼文。被要求寫社群貼文、宣傳文時使用
+argument-hint: [素材 或 檔名]
+disable-model-invocation: true
+---
+
+請以 $ARGUMENTS 為基礎，製作下列貼文方案。
+
+- X: 140 字以內，3 個方案（其中 1 個適合當串文的開頭）
+- Instagram: 前 2 行就能抓住人的架構 + 8 個主題標籤
+- LINE 推播: 200 字以內，用一句促使行動的話收尾
+
+規則：避免誇大的說法與斷定的功效。數字只使用素材裡有的。`,{path:'~/.claude/skills/sns/SKILL.md',lang:'md',biz:1,tags:['SNS']});
+A('skill-biz','每天早上的新聞摘要 /morning','/morning','蒐集指定領域的最新新聞，整理成 3 分鐘能讀完的晨報。搭配 /schedule 就能完全自動。','省下蒐集資訊的時間。用來追蹤產業動態。',
+`---
+name: morning
+description: 查詢指定領域的最新新聞，並摘要成晨報形式
+argument-hint: [領域]
+disable-model-invocation: true
+---
+
+請搜尋「$ARGUMENTS」最近 24 小時內的重要新聞，整理成晨報。
+
+- 依重要程度排序，最多 5 則
+- 每個項目包含 標題 / 2 行摘要 / 為什麼重要 / 出處網址
+- 最後提出 1 件「今天該做的事」`,{path:'~/.claude/skills/morning/SKILL.md',lang:'md',biz:1,hot:1,tags:['調查','自動化']});
+A('skill-biz','技能產生的請求文','prompt','技能不用自己寫，也可以請 Claude 來做。只要說出日常工作的步驟就行。','把「平常一直在做的工作」自動化的最短路徑。',
+`請把我平常都靠手動進行的下列工作，做成可以重複使用的技能。
+工作內容：（在這裡寫步驟）
+每次都會改變的輸入：（例如 檔名、往來對象名稱）
+希望輸出的形式：（例如 表格形式、300 字的摘要）
+請存放在 ~/.claude/skills/，並告訴我怎麼使用。`,{lang:'',biz:1,hot:1});
+
+/* ===== 技能（開發） ===== */
+A('skill-dev','提交訊息 /commit','/commit','讀取變更內容，依規範建立 commit。示範如何用動態上下文帶入 git diff 的寫法。','把每次想 commit 文字的時間降到零。',
+`---
+name: commit
+description: 檢視變更並依規範建立 commit
+disable-model-invocation: true
+allowed-tools: Bash(git add:*) Bash(git status:*) Bash(git commit:*)
+---
+
+## 目前狀態
+- status: !\`git status --short\`
+- diff: !\`git diff HEAD\`
+- 最近的 commit: !\`git log --oneline -5\`
+
+## 指示
+請根據上述變更，以 Conventional Commits 格式（feat / fix / docs / refactor / test / chore）建立 1 個 commit。
+- 標題請用繁體中文，50 字以內，內文要寫「為什麼」
+- 如果混入了無關的變更，就拆開，或先跟我確認
+- 不要 push`,{path:'.claude/skills/commit/SKILL.md',lang:'md',hot:1,tags:['git']});
+A('skill-dev','修正 Issue /fix-issue','/fix-issue','給它 Issue 編號，就能一氣呵成完成：讀取→重現→修正→測試→commit。這是 $ARGUMENTS 的代表範例。','只要輸入 /fix-issue 123 就好。',
+`---
+name: fix-issue
+description: 讀取 GitHub Issue 並修正
+argument-hint: [issue 編號]
+disable-model-invocation: true
+---
+
+請修正 GitHub Issue #$ARGUMENTS。
+
+1. 用 gh issue view $ARGUMENTS 讀取內容
+2. 搜尋相關程式碼，找出原因
+3. 先寫一個會失敗的測試
+4. 修正之後執行測試，確認通過
+5. 說明變更內容之後再 commit`,{path:'.claude/skills/fix-issue/SKILL.md',lang:'md',hot:1,tags:['git']});
+A('skill-dev','撰寫 PR 說明 /pr-desc','/pr-desc','讀取分支的差異，為審查者寫出 PR 說明。','把建立 PR 時的固定文字自動化。',
+`---
+name: pr-desc
+description: 根據目前分支的差異產生 PR 說明
+disable-model-invocation: true
+---
+
+差異: !\`git diff main...HEAD --stat\`
+commit: !\`git log main..HEAD --oneline\`
+
+請根據以上內容，用下列架構撰寫 PR 說明。
+## 概要 / ## 變更內容 / ## 如何確認運作 / ## 希望審查者看的重點 / ## 影響範圍`,{path:'.claude/skills/pr-desc/SKILL.md',lang:'md',tags:['git']});
+A('skill-dev','用簡單易懂的方式說明程式碼 /explain','/explain','用圖解和比喻來說明程式碼。適合交接或學習。','幫助新成員理解，解讀已經變成黑盒子的程式碼。',
+`---
+name: explain
+description: 用圖解與比喻說明程式碼。被問到程式碼運作原理時使用
+argument-hint: [檔案 或 函式名稱]
+---
+
+請依下列步驟說明 $ARGUMENTS。
+1. 用日常生活中的東西來比喻，一句話說完
+2. 用 ASCII 圖畫出處理流程
+3. 挑出主要的部分逐一解說
+4. 舉出一個常見的 bug 或陷阱`,{path:'.claude/skills/explain/SKILL.md',lang:'md',tags:['學習']});
+A('skill-dev','產生變更紀錄（CHANGELOG） /changelog','/changelog','讀取上次發布之後的 commit，整理成給使用者看的更新紀錄。','把撰寫發布說明自動化。',
+`---
+name: changelog
+description: 從 commit 紀錄製作 CHANGELOG 條目
+argument-hint: [上一個標籤名稱]
+disable-model-invocation: true
+---
+
+commit: !\`git log $0..HEAD --oneline\`
+
+請把以上內容用使用者看得懂的說法，分成「新增 / 變更 / 修正」，以 CHANGELOG 格式輸出。內部重構等就省略，如果有破壞性變更，就在最前面警告。`,{path:'.claude/skills/changelog/SKILL.md',lang:'md',tags:['git']});
+A('skill-dev','安全性檢查 /security-review（內建）','/security-review','從分支的差異檢查是否有注入攻擊或認證缺陷等問題的內建指令。','合併前的最後確認。',
+`/security-review`,{tags:['資安']});
+
+/* ===== 官方、知名技能 ===== */
+A('skill-biz','安裝官方技能集（anthropics/skills）','/plugin','Anthropic 官方的技能集，內含能製作、讀取 Word、Excel、PowerPoint、PDF 的實用技能等。','對製作文件資料的自動化最有效。',
+`/plugin marketplace add anthropics/skills
+/plugin install document-skills@anthropic-agent-skills`,{biz:1,hot:1,tags:['官方','製作文件']});
+A('skill-biz','請它操作 Excel、PowerPoint、Word、PDF','prompt','裝好上述技能之後的請託方式。把檔案放好，用自然的說法拜託它就行了。','製作、修改報價單、提案資料、統計表。',
+`請讀取 銷售.xlsx，新增一張附有每月趨勢圖表的工作表。
+另存成別的檔案，不要更動原始檔案。
+
+--- 接著 ---
+把這些內容整理成 5 張 PowerPoint。第 1 張放結論，最後一張放下一步行動。`,{biz:1,hot:1});
+A('skill-biz','製作技能的技能（skill-creator）','/skill-creator','以對話方式進行技能的草稿、測試、改進的官方技能。','想提升自製技能品質的時候。',
+`請用 skill-creator，做一個「從請款單 PDF 擷取金額與往來廠商，整理成表格」的技能`,{biz:1,tags:['官方']});
+A('skill-dev','安裝 commit 相關外掛','/plugin','一次裝好 commit-commands 等常用的 git 操作技能。','給想不自己做、直接開始用的人。',
+`/plugin install commit-commands@claude-plugins-official`,{tags:['官方','git']});
+
+/* ===== 子代理 ===== */
+A('agent','子代理的基本形式','agents/*.md','專門的分身。在獨立的工作空間運作，所以不會弄髒主對話。存檔後，拜託它「用〇〇代理來做」就行。','用來切出調查、審查這類閱讀量大的作業。',
+`---
+name: my-agent
+description: 說明何時呼叫。寫上「在〜的時候積極使用」，比較容易自動委派
+tools: Read, Grep, Glob
+model: sonnet
+---
+
+你是〇〇的專家。
+（在這裡寫角色、步驟、輸出格式）`,{path:'.claude/agents/my-agent.md',lang:'md',hot:1});
+A('agent','程式碼審查員','code-reviewer','只做唯讀審查的安全分身。','用跟實作者不同的眼光再檢查一次。',
+`---
+name: code-reviewer
+description: 專門審查程式碼變更。變更之後要積極使用
+tools: Read, Grep, Glob, Bash
+---
+
+你是資深審查員，負責審查 git diff 的變更。
+觀點：bug、邊界條件、錯誤處理、資安、可讀性、測試不足。
+輸出：分成 嚴重 / 需修正 / 建議 三個等級，並附上相關檔案與行號、修正方式。
+不自己動手修正，只負責指出問題。`,{path:'.claude/agents/code-reviewer.md',lang:'md',hot:1,tags:['開發']});
+A('agent','調查專員','researcher','只負責查資料。不把冗長的搜尋結果帶進主對話，只回傳重點。','競品調查、技術選型、蒐集資料。',
+`---
+name: researcher
+description: 專門負責調查、蒐集資訊。查閱網路與資料，只回傳重點
+tools: WebSearch, WebFetch, Read, Grep, Glob
+---
+
+以調查專員的身分行動。
+- 以官方、第一手資訊為優先，一定要確認日期
+- 區分事實與推測
+- 回覆以「結論 / 依據 / 出處網址 / 未確認事項」整理，控制在 600 字以內`,{path:'.claude/agents/researcher.md',lang:'md',biz:1,hot:1,tags:['調查']});
+A('agent','校對專員（文章檢查）','proofreader','只負責指出錯字、用字不一致與不自然的說法，不改寫原文。','用在發布前的稿件檢查。',
+`---
+name: proofreader
+description: 專門校對文章。指出錯字漏字、用字不統一、不自然的中文
+tools: Read, Grep
+---
+
+以校對者的身分閱讀文章，指出下列問題。
+錯字漏字 / 用字不統一（例：「其它、其他」）/ 主詞與述語對不起來 / 對事實有疑問之處
+輸出為「相關位置 → 理由 → 修正建議」的表格。不更動原文。`,{path:'.claude/agents/proofreader.md',lang:'md',biz:1,tags:['文章']});
+A('agent','除錯專家','debugger','專門找出錯誤的原因。依「重現→假設→驗證」的順序進行。','貼上錯誤紀錄來找原因的時候。',
+`---
+name: debugger
+description: 調查錯誤、測試失敗、非預期行為的原因。出問題時使用
+---
+
+你是除錯專家。
+1. 確認錯誤與重現步驟
+2. 最多提出 3 個假設，用驗證指令逐步縮小範圍
+3. 找出根本原因之後，再提出最小幅度的修正
+要修的是原因，而不是症狀。`,{path:'.claude/agents/debugger.md',lang:'md',tags:['開發']});
+A('agent','呼叫方式的範例','prompt','要用哪個代理，只要用說的就能指定。也可以讓它們平行執行。','把「查資料的人」和「修正的人」分開，精準度會提高。',
+`請用 researcher 代理調查 3 家競爭對手的收費方案。
+同時請 proofreader 檢查這份稿子。
+結果都出來之後，只跟我報告重點。`,{biz:1});
+/* ===== MCP ===== */
+A('mcp','MCP 的基本（3 種連接方式）','claude mcp add','把外部服務或資料庫變成 Claude 工具的機制。有用網址連線的 http，以及啟動電腦上程式的 stdio。','連上之後，用 /mcp 確認狀態並登入。',
+`# 遠端（用網址連線。最簡單）
+claude mcp add --transport http 名稱 https://example.com/mcp
+
+# 本機啟動（stdio。-- 後面是執行的指令）
+claude mcp add --transport stdio 名稱 -- npx -y 套件名稱
+
+# 清單、刪除
+claude mcp list
+claude mcp remove 名稱`,{lang:'sh',biz:1,hot:1});
+A('mcp','範圍（scope）的指定','--scope','local 只有自己用（預設值），project 是團隊共用（存在 .mcp.json），user 是自己在所有專案都用。','團隊想用同一組連線的時候選 project。',
+`claude mcp add --transport http notion --scope user https://mcp.notion.com/mcp
+claude mcp add --transport http sentry --scope project https://mcp.sentry.dev/mcp`,{lang:'sh',biz:1});
+A('mcp','Notion','notion','搜尋頁面、讀寫內容、操作資料庫。與會議記錄、企劃書的存放處直接相連。','「從 Notion 找出上週的會議記錄並摘要」「把這些內容放進新頁面」。',
+`claude mcp add --transport http notion https://mcp.notion.com/mcp
+# 新增後在 Claude Code 內輸入 /mcp → 選 notion 並登入`,{lang:'sh',biz:1,hot:1,tags:['文件']});
+A('mcp','GitHub','github','搜尋、操作 Issue、PR 與程式碼。','「把還沒處理的 Issue 依優先順序整理」「審查這個 PR」。需要個人存取權杖。',
+`claude mcp add-json github '{"type":"http","url":"https://api.githubcopilot.com/mcp","headers":{"Authorization":"Bearer 這裡放 token"}}'`,{lang:'sh',hot:1,tags:['開發']});
+A('mcp','Sentry','sentry','讀取錯誤監控的內容，用在調查原因與修正。','「調查過去 24 小時內最常出現的錯誤原因，並提出修正方案」。',
+`claude mcp add --transport http sentry https://mcp.sentry.dev/mcp`,{lang:'sh',tags:['開發']});
+A('mcp','Stripe','stripe','參照、操作付款、客戶與帳單資料。','「統計這個月的退款清單」。要小心處理正式環境的金鑰。',
+`claude mcp add --transport http stripe https://mcp.stripe.com`,{lang:'sh',biz:1,tags:['營收']});
+A('mcp','Figma','figma','讀取設計稿並轉成程式碼。','「用 React 實作這個 frame」。',
+`claude mcp add --transport http figma https://mcp.figma.com/mcp`,{lang:'sh',tags:['設計']});
+A('mcp','Linear','linear','搜尋、建立任務管理的工單。','「摘要本週衝刺的工單」。',
+`claude mcp add --transport http linear https://mcp.linear.app/mcp`,{lang:'sh',biz:1,tags:['任務']});
+A('mcp','Playwright（瀏覽器自動操作）','playwright','實際操作瀏覽器，可以確認畫面、填寫表單、截圖。','「打開我的網站確認版面有沒有跑掉」「登入後把畫面截下來」。',
+`claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest`,{lang:'sh',biz:1,hot:1,tags:['瀏覽器']});
+A('mcp','Context7（參照最新文件）','context7','取得函式庫的最新文件，避免用到過時的寫法。','「用最新版 Next.js 的寫法。use context7」。',
+`claude mcp add --transport http context7 https://mcp.context7.com/mcp`,{lang:'sh',hot:1,tags:['開發']});
+A('mcp','資料庫（PostgreSQL 等）','dbhub','用自然的說法向資料庫查詢。建議使用唯讀的連線資訊，比較安全。','「列出上個月新使用者數，依日期呈現」。',
+`claude mcp add --transport stdio db -- npx -y @bytebase/dbhub --dsn "postgresql://唯讀使用者:密碼@主機:5432/資料庫名稱"`,{lang:'sh',tags:['資料']});
+A('mcp','Airtable','airtable','搜尋、更新表格形式的資料。','「把還沒處理的詢問篩出來，做出回覆草稿」。',
+`claude mcp add --transport stdio --env AIRTABLE_API_KEY=這裡放金鑰 airtable -- npx -y airtable-mcp-server`,{lang:'sh',biz:1,tags:['資料']});
+A('mcp','團隊共用的 .mcp.json','.mcp.json','放在專案根目錄，打開同一個資料夾的所有人都會共用連線設定。金鑰用環境變數傳遞。','所有成員使用同一套工具時的基本做法。',
+`{
+  "mcpServers": {
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    }
+  }
+}`,{path:'.mcp.json',lang:'json',biz:1});
+A('mcp','使用 MCP 的指示範例','prompt','連上之後，只要照平常那樣拜託它就好。要用哪個工具由 Claude 來選。','橫跨工作上的讀取與寫入來自動化。',
+`請從 Notion 的「會議記錄」資料庫讀取本週的內容，抽出決議事項與 TODO，加到 Notion 的「任務」裡。加入之前先讓我看過清單。`,{biz:1,hot:1});
+
+/* ===== Hook ===== */
+A('hook','Hook 是什麼','settings.json','在特定時機一定會自動執行的處理。把想要「確實」執行、而不是「拜託」它去做的規則放在這裡。','設定在 ~/.claude/settings.json（全域）或 .claude/settings.json（專案）。新增後用 /hooks 確認。',
+`{
+  "hooks": {
+    "事件名稱": [
+      {
+        "matcher": "目標工具名稱（留空代表全部）",
+        "hooks": [{ "type": "command", "command": "要執行的指令" }]
+      }
+    ]
+  }
+}`,{path:'.claude/settings.json',lang:'json',biz:1,hot:1});
+A('hook','輸入等待時顯示桌面通知（Mac）','Notification','Claude 在等待許可、等待輸入時發出通知。離開座位也不會錯過。','把長時間的作業交給它，自己去忙別的事情的時候。',
+`{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \\"Claude Code needs your attention\\" with title \\"Claude Code\\"'"
+          }
+        ]
+      }
+    ]
+  }
+}`,{path:'~/.claude/settings.json',lang:'json',biz:1,hot:1});
+A('hook','編輯後自動排版（Prettier）','PostToolUse','每次編輯檔案都用 Prettier 排版。程式碼的格式永遠保持一致。','不用再手動排版，也不會被審查指出格式問題。',
+`{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+          }
+        ]
+      }
+    ]
+  }
+}`,{path:'.claude/settings.json',lang:'json',hot:1,tags:['開發']});
+A('hook','阻擋編輯重要檔案','PreToolUse','拒絕編輯 .env 或 package-lock.json。拒絕的理由會傳達給 Claude，它會想別的方法。（1/2 腳本）','預防意外。保護機密資訊。',
+`#!/bin/bash
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+PROTECTED_PATTERNS=(".env" "package-lock.json" ".git/")
+
+for pattern in "\${PROTECTED_PATTERNS[@]}"; do
+  if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+    echo "Blocked: $FILE_PATH matches protected pattern '$pattern'" >&2
+    exit 2
+  fi
+done
+exit 0`,{path:'.claude/hooks/protect-files.sh（建立後執行 chmod +x）',lang:'sh',hot:1,tags:['安全']});
+A('hook','阻擋編輯重要檔案（註冊）','PreToolUse','（2/2 註冊）設定在編輯前一定先執行上面的腳本。exit 2 代表拒絕。','要和上面的腳本搭配使用。',
+`{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\\"$CLAUDE_PROJECT_DIR\\"/.claude/hooks/protect-files.sh"
+          }
+        ]
+      }
+    ]
+  }
+}`,{path:'.claude/settings.json',lang:'json',tags:['安全']});
+A('hook','壓縮後重新注入規則','SessionStart','對話壓縮（compact）時容易忘記的約定事項，在壓縮完之後每次都提醒它。','避免長時間作業中規則被漏掉。',
+`{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Reminder: use Bun, not npm. Run bun test before committing. Current sprint: auth refactor.'"
+          }
+        ]
+      }
+    ]
+  }
+}`,{path:'.claude/settings.json',lang:'json',biz:1,tags:['上下文管理']});
+A('hook','請它幫你做 Hook','prompt','不用自己寫 JSON，用中文拜託它，就會幫你寫好設定。','第一個 Hook 用這招最快。',
+`請新增一個 Hook 到 ~/.claude/settings.json：作業結束進入等待輸入時，顯示 macOS 通知。不要刪除現有的設定。`,{biz:1,hot:1});
+
+/* ===== CLAUDE.md、設定 ===== */
+A('config','CLAUDE.md 範本（開發）','CLAUDE.md','每次都會被讀取的交接筆記。訣竅是寫得短、而且只寫守得住的規則（太長容易被忽略）。','放在專案根目錄。','# 專案概要\n（用 1～2 行說明這是什麼專案）\n\n# 常用指令\n- 建置: npm run build\n- 測試: npm test\n- Lint: npm run lint\n\n# 程式碼規範\n- TypeScript strict。不使用 any\n- 函式要小，只負責一件事\n- 註解只寫「為什麼」\n\n# 作業規則\n- 修改後一定要執行測試\n- 不相關的地方不要動\n- 不讀取、不編輯 .env\n- 不清楚的地方不要猜測，直接提問',{path:'CLAUDE.md',lang:'md',hot:1,tags:['開發']});
+A('config','CLAUDE.md 範本（工作、文章）','CLAUDE.md','不是程式碼的資料夾（企劃、部落格、會計）也有效。可以讓它記住文風與禁止事項。','用在經營部落格、製作文件、行政作業的資料夾。','# 關於這個資料夾\n部落格稿件與圖片素材的存放處。讀者是 30～40 歲的上班族。\n\n# 文風\n- 口吻親切自然。一句話控制在 60 字以內\n- 專業術語在第一次出現時補一句說明\n- 結論先寫\n\n# 禁止\n- 誇大的說法、沒有根據的數字\n- 覆蓋原始檔案（一定要另存新檔）\n\n# 確認規則\n- 刪除或移動檔案之前一定要先確認',{path:'CLAUDE.md',lang:'md',biz:1,hot:1});
+A('config','權限設定（允許、確認、禁止）','permissions','減少每次的確認，同時禁止危險的操作。deny 的優先順序高於 allow。','常用指令允許，讀取 .env 或具破壞性的操作則禁止。',
+`{
+  "permissions": {
+    "allow": [
+      "Bash(npm run test:*)",
+      "Bash(npm run lint)",
+      "Bash(git status)",
+      "Bash(git diff:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./secrets/**)",
+      "Bash(rm -rf:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}`,{path:'.claude/settings.json',lang:'json',biz:1,hot:1,tags:['安全']});
+A('config','規劃模式（先只做計畫）','Shift+Tab','不更動檔案，只做調查與規劃的模式。核准之後再進入執行。','大幅度的變更，或在不熟悉的領域作業之前。',
+`# 啟動時指定
+claude --permission-mode plan
+
+# 啟動後按 Shift+Tab 切換`,{lang:'sh',biz:1,hot:1,tags:['安全']});
+A('config','個人專用的覆寫設定','settings.local.json','不與團隊共用、只屬於自己的設定。不納入 Git。','只想在自己的電腦上允許的指令等。',
+`{
+  "permissions": {
+    "allow": ["Bash(open:*)"]
+  }
+}`,{path:'.claude/settings.local.json',lang:'json'});
+
+/* ===== 自動化 ===== */
+A('auto','無頭模式執行 claude -p','claude -p','不開啟畫面，只執行一次並輸出結果。可以嵌入腳本或其他工具。','與 shell 腳本、cron、其他應用程式串接。',
+`claude -p "用 3 行摘要 README.md"
+
+# 以 JSON 接收結果
+claude -p "列出這個資料夾的 3 個問題" --output-format json`,{lang:'sh',biz:1,hot:1});
+A('auto','用管線傳入','pipe','把指令結果或檔案透過標準輸入傳進去處理。','摘要紀錄檔、審查 diff 等。',
+`cat error.log | claude -p "列出最可能是錯誤原因的 3 項，並附上依據"
+
+git diff main | claude -p "指出這次變更的風險"`,{lang:'sh',biz:1});
+A('auto','加上允許工具與預算上限，安全運作','claude -p','自動執行時，替可用的工具與費用設下上限是鐵則。','避免無人執行時失控。',
+`claude -p "摘要尚未 commit 的變更" \\
+  --allowedTools "Bash(git diff:*)" "Bash(git status:*)" \\
+  --max-turns 5 \\
+  --max-budget-usd 1.00`,{lang:'sh',hot:1,tags:['安全']});
+A('auto','批次處理檔案的迴圈','for','對每個檔案自動重複執行同一個指示。','一次摘要 100 份會議記錄、批次校對文章。',
+`mkdir -p out
+for f in notes/*.md; do
+  claude -p "把下面的筆記摘要成 3 行重點" < "$f" > "out/$(basename "$f")"
+done`,{lang:'sh',biz:1,hot:1});
+A('auto','定期執行（雲端） /schedule','/schedule','指定日期時間自動執行。就算關掉電腦也會運作。內容用對話來設定。','每天早上的新聞摘要、每週一的統計郵件草稿。',
+`/schedule 平日早上 8 點，摘要 5 則 AI 業界最新新聞，加到 Notion 的「晨報」頁面`,{biz:1,hot:1});
+A('auto','固定間隔盯著 /loop','/loop','在工作階段開著的期間，重複同一個指示。','等待部署或建置完成、監控。',
+`/loop 10m 確認正式環境的健康檢查，如果有異常就告訴我`,{biz:1});
+A('auto','在 GitHub 上用 @claude 呼叫','GitHub Actions','在 Issue、PR 的留言中寫 @claude 就會自動運作的架構。導入最快的方法是 /install-github-app。','在 PR 上完成審查請求與小幅修正。',
+`/install-github-app
+
+# 導入後，在 PR 或 Issue 的留言中
+@claude 修正這個錯誤，也請補上測試`,{lang:'sh',hot:1,tags:['開發']});
+A('auto','同時進行多項作業（worktree）','claude -w','建立作業用的獨立副本，讓不同的作業不會互相衝突。','同時推進功能 A 和 bug 修正 B。',
+`claude -w feature-a
+# 在另一個終端機
+claude -w bugfix-b`,{lang:'sh',tags:['開發']});
+
+/* ===== 有效的指示文 ===== */
+A('prompt','探索→規劃→實作→commit','workflow','不要一開始就讓它做，而是一步一步來的王道做法。功能越大越有效。','不容易失敗的進行方式。',
+`1. 先讀取相關檔案，說明現況（還不要寫程式碼）
+2. 擬定實作計畫，等我核准
+3. 核准後再實作，並執行測試
+4. 最後摘要變更內容並 commit`,{biz:1,hot:1});
+A('prompt','讓它來問需求（訪談）','interview','在動手做之前，讓 Claude 先來問問題，把遺漏的部分補起來的方法。','規格模糊的新案子、釐清製作文件的目的。',
+`我接下來想做「〇〇」。動手之前，請用 AskUserQuestion 工具問我問題，把需求釐清。一次最多 3 題，附上選項。等你充分理解之後，把需求列成清單向我確認。`,{biz:1,hot:1});
+A('prompt','先給完成條件（附驗證）','verify','讓它自己確認「做好了沒」，品質會提高。','修正 bug、資料統計的驗算。',
+`請修正 bug。完成條件是 (1) 照重現步驟已經無法重現 (2) 既有測試全部通過 (3) 新增 1 個測試。在實際執行並讓我看到結果之前，不要算完成。`,{hot:1,tags:['品質']});
+A('prompt','把寫的人和看的人分開','writer-reviewer','在同一段對話裡自己評價自己寫的東西，會變得寬鬆。要讓它用另一個角度重新檢視。','重要文件、設計書、所有程式碼。',
+`請把你剛剛寫的東西，當作你是另一位負責人，嚴格地審查。把錯誤、遺漏、會讓讀者看不懂的地方，依重要程度列出來。要修改的話，等我確認之後再改。`,{biz:1});
+A('prompt','引用檔案來拜託','@','加上 @ 就能直接指定檔案或資料夾。','取代附件。',`請讀取 @docs/proposal.md，整理成給管理階層看的一頁摘要。
+也請確認有沒有和 @data/sales.csv 裡的數字互相矛盾。`,{biz:1});
+A('prompt','讓它質疑前提','challenge','避免奉承或太早下結論，先把問題點提出來的指示。','企劃的討論與測試想法。',
+`請在贊成的意見之前，先列出這個企劃的弱點。再附上預期會有的 3 個反對意見，以及各自的對應方案。`,{biz:1,hot:1});
+A('prompt','縮小變更範圍','scope','防止 AI 太積極而做出多餘的修改。','安全地進行小幅修正。',
+`除了我拜託的地方，其他都不要改。有在意的地方不要直接修，最後再用備註的方式回報。`,{biz:1});
+A('prompt','把每次的指示變成長期規則','memory','如果同樣的指正一直重複，就讓它寫進 CLAUDE.md。','說過兩次就變成機制。',
+`請把這次造成重做的我的指正，用 1～2 行寫進 CLAUDE.md，避免再次發生。`,{biz:1,hot:1});
+
+/* ===== 快速鍵 ===== */
+A('key','切換模式','Shift+Tab','像 一般 → 自動編輯 → 規劃 這樣依序切換權限模式。','先用規劃模式調查，再用一般模式執行。',
+`Shift+Tab`,{biz:1,hot:1});
+A('key','中斷、倒回','Esc / Esc Esc','按 Esc 停止執行。按兩次 Esc 會出現倒回選單。','阻止失控、回到上一步。',
+`Esc
+Esc Esc`,{biz:1,hot:1});
+A('key','指定檔案','@','輸入 @ 後面接檔名就會自動補全。','不用手打路徑。',
+`@檔名`,{biz:1});
+A('key','直接執行 shell 指令','!','在行首加上 ! ，就不經過 Claude 直接執行指令，並把結果放進對話。','想馬上給它看 git status 等資訊的時候。',
+`! git status`,{biz:1});
+A('key','用編輯器編輯長文','Ctrl+G','可以在編輯器裡寫長的指示再貼回來。','撰寫複雜的請託內容。',
+`Ctrl+G`,{biz:1});
+A('key','貼上圖片','Ctrl+V','可以直接貼上螢幕截圖來討論（Mac 是 Ctrl+V，不是 Cmd）。','用在錯誤畫面、設計修改的指示。',
+`Ctrl+V`,{biz:1});
+/* ===== 追加: 外掛、內建技能 ===== */
+(function(){
+ var mv={'安裝官方技能集':'plugin','請它操作 Excel、PowerPoint、Word、PDF':'plugin','製作技能的技能（skill-creator）':'plugin','安裝 commit 相關外掛':'__drop'};
+ I=I.filter(function(x){if(mv[x.t]==='__drop')return false;if(mv[x.t])x.c=mv[x.t];return true});
+})();
+A('plugin','什麼是外掛、安裝方式','/plugin','外掛是把技能、子代理、Hook、MCP 連線打包在一起的「綜合包」。只要裝起來就會多出 /名稱。從發布來源（市集）挑選並安裝。','不想自己做，想一次開始使用經典好用功能的時候。',
+`/plugin                                                  # 開啟清單（Discover）。輸入文字即可搜尋
+/plugin install commit-commands@claude-plugins-official  # 用 名稱@發布來源 指定
+claude plugin list                                       # 從 shell 確認已安裝的項目`,{lang:'sh',biz:1,hot:1,tags:['入門']});
+A('plugin','commit-commands（commit、建立 PR）','commit-commands','官方發布的 git 操作外掛。commit、push、建立 PR 一個指令搞定。安裝後會出現 /commit-commands:commit。','不用再每次煩惱 commit 訊息怎麼寫。',
+`/plugin install commit-commands@claude-plugins-official
+# 安裝之後
+/commit-commands:commit`,{lang:'sh',hot:1,tags:['官方','git']});
+A('plugin','code-review（PR 審查）','code-review','官方發布的審查類外掛。讓它檢查 PR 的變更。和內建的 /code-review 是分開發布的東西。','避免合併前漏看。',
+`/plugin install code-review@claude-plugins-official`,{lang:'sh',tags:['官方','開發']});
+A('plugin','feature-dev（功能開發流程）','feature-dev','官方發布。按照調查、設計、實作、確認的流程來推進新功能開發的整套工作流程。','避免較大的功能追加變成走一步算一步。',
+`/plugin install feature-dev@claude-plugins-official
+# 安裝之後，輸入 / 確認跳出來的名稱再執行`,{lang:'sh',tags:['官方','開發']});
+A('plugin','security-guidance（危險寫法警告）','security-guidance','官方發布。找出資安上有疑慮的程式碼寫法並提醒。','及早補上 AI 寫的程式碼中的漏洞。',
+`/plugin install security-guidance@claude-plugins-official`,{lang:'sh',tags:['官方','資安']});
+A('plugin','document-skills（Word、Excel、PowerPoint、PDF）','anthropics/skills','Anthropic 官方的技能集。內含讀取、製作、修改 Word、Excel、PowerPoint、PDF 的技能。是自動化製作文件資料最常用的經典組合。','報價單、提案書、統計表、讀取請款單 PDF。',
+`/plugin marketplace add anthropics/skills
+/plugin install document-skills@anthropic-agent-skills`,{lang:'sh',biz:1,hot:1,chk:1,tags:['官方','製作文件']});
+A('plugin','Office 類技能的請託方式（範例）','prompt','裝好上面的技能之後，把檔案放好，照平常的方式拜託就行了。指定原始檔案另存新檔來保留，比較安全。','Excel 的月報統計、PowerPoint 的摘要資料、從 PDF 擷取內容。',
+`請讀取 銷售.xlsx，新增一張附有每月趨勢圖表的工作表。不要更動原始檔案，另存成別的檔名。
+
+接著，把這些內容整理成 5 張 PowerPoint。第 1 張放結論，最後一張放下一步行動。`,{lang:'',biz:1,hot:1});
+A('plugin','frontend-design（提升外觀品質）','frontend-design','官方發布。避開看起來全都一樣的「AI 做的感覺」畫面，讓它有意識地決定配色、留白、字型的指南。','製作 LP、儀表板、網站的外觀。',
+`/plugin install frontend-design@claude-plugins-official`,{lang:'sh',hot:1,chk:1,tags:['設計']});
+A('plugin','knowledge-work-plugins（依職務分類的工作套組）','anthropics/knowledge-work-plugins','Anthropic 官方，收集了業務、法務、財務等依職務分類的外掛的發布來源。適合非工程師的工作。','找出和自己職務相近的外掛來安裝。',
+`/plugin marketplace add anthropics/knowledge-work-plugins
+/plugin   # 在 Discover 搜尋職務名稱`,{lang:'sh',biz:1,hot:1,chk:1,tags:['官方','工作']});
+A('plugin','Superpowers（把開發流程制式化）','superpowers','全球很受歡迎的第三方製品。讓它把設計→規劃→測試→審查的流程當作技能來遵守。因為不是官方的，安裝前請先確認內容。','想減少草率實作的個人開發。',
+`/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace`,{lang:'sh',hot:1,chk:1,tags:['熱門','開發']});
+A('plugin','新增社群發布來源','claude-community','Anthropic 營運的「由作者提交的外掛」發布來源。數量比官方多，不過內容要自己確認。','尋找官方沒有的功能時。',
+`/plugin marketplace add anthropics/claude-plugins-community
+/plugin install 外掛名稱@claude-community`,{lang:'sh',tags:['官方']});
+A('plugin','安裝前的確認與負擔檢查','security','外掛可以執行 Hook 與 MCP。安裝前請先讀「會新增什麼」，安裝後也能確認一直增加的讀取量。','避免裝太多而讓運作變慢。',
+`claude plugin details 外掛名稱     # 每次會增加多少讀取量
+/reload-plugins                      # 剛裝完卻沒有生效的時候`,{lang:'sh',biz:1,tags:['安全']});
+A('skill-dev','/verify 實際執行確認（內建）','/verify','實際啟動應用程式，確認變更是否如預期運作的內建技能。不會只靠測試結果。','避免「以為修好了」。',
+`/verify`,{tags:['品質']});
+A('skill-dev','/debug 調查故障（內建）','/debug','用來調查故障原因的內建技能。','貼上錯誤畫面來找原因的時候。',
+`/debug 按下儲存按鈕之後畫面一片空白`,{tags:['開發']});
+A('skill-dev','/claude-api 參照 API 開發（內建）','/claude-api','讀取 Claude API 參考文件之後來實作的技能。在使用 anthropic SDK 的程式碼中也會自動運作。','把 AI 功能嵌入自己的應用程式時。',
+`/claude-api`,{tags:['開發']});
+A('skill-biz','/doctor prompt-audit 設定盤點','/doctor','檢查 CLAUDE.md 或技能裡有沒有留下過時、互相矛盾的指示。','用久了設定變多之後的清理。',
+`/doctor prompt-audit`,{biz:1,tags:['維護']});
+
+/* ===== 追加 MCP ===== */
+A('mcp','應用程式的「Connectors」連接（不需要指令）','Connectors','在桌面應用程式中，Slack、GitHub、Linear、Notion、Google Calendar 等只要用畫面操作就能連接。+ → Connectors，或 Settings → Connectors。','不擅長指令的人，用這個方法最快。連上之後，照平常那樣拜託它就行。',
+`請讀取我這週的 Google 日曆行程，告訴我哪幾天有 2 小時以上的空檔。`,{lang:'',biz:1,hot:1,tags:['應用程式']});
+A('mcp','Supabase（資料庫、認證）','supabase','把 Supabase 的資料表確認與執行 SQL 交給 Claude。正式環境請用唯讀。','確認應用程式的資料、設計資料表。',
+`claude mcp add --transport http supabase https://mcp.supabase.com/mcp`,{lang:'sh',chk:1,tags:['資料']});
+A('mcp','Vercel（部署、紀錄）','vercel','讀取專案、部署狀況與紀錄。','「調查最近一次部署失敗的原因」。',
+`claude mcp add --transport http vercel https://mcp.vercel.com`,{lang:'sh',chk:1,tags:['開發']});
+A('mcp','Atlassian（Jira、Confluence）','atlassian','搜尋工單與參照規格書。','「讀取這張工單的規格，然後實作」。',
+`claude mcp add --transport sse atlassian https://mcp.atlassian.com/v1/sse`,{lang:'sh',biz:1,chk:1,tags:['任務']});
+A('mcp','Asana','asana','搜尋、更新任務與專案。','「把這週到期的任務，依負責人做成表格」。',
+`claude mcp add --transport sse asana https://mcp.asana.com/sse`,{lang:'sh',biz:1,chk:1,tags:['任務']});
+A('mcp','Filesystem（讀寫指定資料夾）','filesystem','只把指定的資料夾加入 Claude 的作業範圍。','橫跨 Documents 底下的資料來整理。',
+`claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Documents`,{lang:'sh',biz:1,chk:1,tags:['檔案']});
+A('mcp','Sequential Thinking（逐步思考）','sequential-thinking','讓它把複雜的問題拆成幾個階段來思考的輔助工具。','設計的評估、原因互相纏繞的故障。',
+`claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking`,{lang:'sh',chk:1,tags:['思考']});
+A('mcp','Memory（長期備忘）','memory','儲存想跨對話記住的事情的輔助工具。','把喜好和決定事項帶到下一次。',
+`claude mcp add memory -- npx -y @modelcontextprotocol/server-memory`,{lang:'sh',chk:1,tags:['記憶']});
+
+/* ===== 配方 ===== */
+A('recipe','會議筆記 → 會議記錄 → 登錄到 Notion 的任務','配方','結合技能與 MCP，把開完會之後的行政作業濃縮成一個請託。','每次要花 30 分鐘的會議記錄與任務登錄，縮短到幾分鐘。',
+`# 準備（只要做一次）
+# 1. 把 /minutes 技能存到 ~/.claude/skills/minutes/SKILL.md（技能那一章）
+# 2. 連接 Notion: claude mcp add --transport http notion https://mcp.notion.com/mcp
+
+# 每次的請託
+/minutes （在這裡貼上會議筆記）
+請把做好的會議記錄裡的 TODO，加到 Notion 的「任務」資料庫。加入之前先讓我看過清單。`,{lang:'sh',biz:1,hot:1,flow:['貼上會議筆記','/minutes','會議記錄完成','Notion MCP','加到任務資料庫']});
+A('recipe','每天早上自動把業界新聞做成晨報','配方','結合晨報技能與定期執行。就算關掉電腦也會運作的，是雲端執行的 /schedule。','讓蒐集資訊的時間歸零。',
+`# 1. 儲存 ~/.claude/skills/morning/SKILL.md（業務技能的 /morning）
+# 2. 建立定期執行
+/schedule 平日早上 8 點執行 /morning AI業界，把結果加到 Notion 的「晨報」頁面`,{lang:'sh',biz:1,hot:1,flow:['/morning','/schedule','平日 8 點自動執行','儲存到 Notion']});
+A('recipe','用「調查→撰寫→校對→社群宣傳」大量產出部落格文章','配方','依序呼叫技能與子代理的流程。人只要做最後的確認。','從一個素材一口氣做到文章和宣傳文。',
+`/research （文章主題）
+請根據上面的調查結果，把 1500 字的文章草稿存成 draft.md。
+請用 proofreader 代理校對 draft.md，並把指出的問題都改好。
+/sns draft.md`,{lang:'sh',biz:1,hot:1,flow:['/research','製作草稿','proofreader','/sns']});
+A('recipe','一口氣整理好雜亂的會計資料夾','配方','先讓它提出計畫，核准後才執行的安全流程。','整理請款單、收據、年底的資料蒐集。',
+`/sort-files ~/Documents/會計
+（確認對照表沒問題之後）執行
+/clean-data ~/Documents/會計/費用清單.csv`,{lang:'sh',biz:1,flow:['/sort-files','確認對照表','執行','/clean-data']});
+A('recipe','一次摘要 100 份資料（無頭模式）','配方','用迴圈執行 claude -p，不靠人工就能整批處理。加上上限來避免失控。','問卷的自由填寫欄、盤點過去的會議記錄。',
+`mkdir -p out
+for f in notes/*.md; do
+  claude -p "用 3 行摘要重點" --max-turns 3 --max-budget-usd 0.5 < "$f" > "out/$(basename "$f")"
+done`,{lang:'sh',hot:1,flow:['notes/*.md','claude -p','摘要','存到 out/']});
+A('recipe','讓它自動審查 PR','配方','搭配 GitHub 上的 @claude 呼叫，以及專門審查的代理一起使用。','縮短等待審查的時間。',
+`/install-github-app
+# 儲存 .claude/agents/code-reviewer.md（子代理那一章）
+# 在 PR 的留言欄
+@claude 審查這次的變更。依嚴重程度排序`,{lang:'sh',flow:['建立 PR','@claude','code-reviewer','在留言中指出問題']});
+A('recipe','實際打開自己的網站確認版面有沒有跑掉','配方','用 Playwright MCP 操作瀏覽器，看著畫面讓它修正。','公開前的手機版面檢查。',
+`claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest
+（啟動後）
+請打開 http://localhost:3000，用手機寬度（寬 390px）找出版面跑掉的地方。找到之後請截圖並提出修正方案。`,{lang:'sh',biz:1,flow:['Playwright MCP','用瀏覽器打開','發現版面跑掉','修正方案']});
+
+/* ===== 遇到問題時 ===== */
+A('trouble','技能沒有出現在 / 的清單裡','技能','確認存放位置與名稱。資料夾名稱和 SKILL.md 的拼法不同、多了一層資料夾，是最常見的原因。','自製的技能沒有反應的時候。',
+`ls ~/.claude/skills/*/SKILL.md      # 這裡有沒有 SKILL.md
+/skills                              # 有沒有被辨識到
+/reload-skills                       # 剛新增卻沒有生效的時候`,{lang:'sh',biz:1,hot:1});
+A('trouble','每次都被問「要允許嗎？」很麻煩','允許','只把常用又安全的指令放進 allow。危險的放進 deny。不建議整個全部允許。','減少一直跳出確認對話框。',
+`/permissions
+# 或是加到 .claude/settings.json 的 permissions.allow
+# 例  "Bash(git status)", "Bash(npm run test:*)"`,{lang:'sh',biz:1,hot:1});
+A('trouble','MCP 連不上、驗證過期了','MCP','確認狀態，重新連線或重新登入。','Notion 等突然不能用的時候。',
+`/mcp                    # 確認狀態。必要的話在這裡登入
+/mcp reconnect all      # 重新連線
+claude mcp list         # 從 shell 看清單`,{lang:'sh',biz:1,hot:1});
+A('trouble','運作很慢、忘記剛剛的指示','上下文','多半是對話太長造成的。可以摘要，或是話題換了就開新的對話。','長時間作業到一半覺得吃力的時候。',
+`/context                              # 用掉多少了
+/compact 決定事項與未完成的 TODO 一定要保留
+/clear                                # 話題換了的時候`,{lang:'sh',biz:1,hot:1});
+A('trouble','連多餘的檔案都被改了','安全','先倒回去，再限定範圍重新拜託。事先用規劃模式只讓它提出計畫也很有效。','AI 太積極的時候。',
+`/rewind
+（倒回之後）除了我拜託的地方，其他都不要改。有在意的地方不要直接修，最後再用備註回報。`,{lang:'sh',biz:1,hot:1});
+A('trouble','外掛裝好了卻不能用','外掛','可能是還沒生效，或是載入失敗。重新載入，並確認 /plugin 的 Errors 分頁。','剛裝好卻沒有出現 /名稱 的時候。',
+`/reload-plugins
+/plugin     # 在 Errors 分頁確認原因`,{lang:'sh',biz:1});
+A('trouble','Hook 沒有運作','Hook','確認有沒有看到註冊、腳本有沒有執行權限、有沒有安裝 jq。','自動排版或通知沒有效果的時候。',
+`/hooks                                  # 有沒有註冊
+chmod +x .claude/hooks/protect-files.sh # 執行權限
+which jq                                # 沒有的話用 brew install jq 等安裝`,{lang:'sh'});
+A('trouble','給出過時的寫法、過時的資訊','更新到最新','讓它參照最新的文件，或是請它確認日期。','函式庫的新版本、收費與規格的最新確認。',
+`請先確認最新的官方文件再實作。如果發現是過時的寫法，請告訴我。
+（如果有安裝 Context7 MCP）use context7`,{lang:'',biz:1});
+
+I.forEach(function(x){if(x.c==='mcp'&&/^(Notion|GitHub|Sentry|Stripe|Figma|Linear|Playwright|Context7|資料庫|Airtable)/.test(x.t))x.chk=true});
+
+/* ===== 在桌面應用程式的使用方式 ===== */
+window.APPDEF={
+ start:'在應用程式裡，到 Code 分頁選擇作業資料夾，在送出按鈕旁決定模型與許可模式，接下來就和終端機版一樣輸入指示。',
+ slash:'在輸入欄輸入 /，或是從 + → Slash commands 選擇。',
+ plugin:'+ → Plugins → Add plugin 會開啟外掛清單。安裝後的管理在 Manage plugins。在終端機裡裝的外掛，在應用程式裡也能用。',
+ 'skill-biz':'放在 ~/.claude/skills/ 的技能，在應用程式的本機工作階段也能使用。用 + → Slash commands，或輸入 / 來呼叫。也可以從側邊欄的 Customize 管理。',
+ 'skill-dev':'檔案的存放位置和終端機版相同。輸入 / 或用 + → Slash commands 就能呼叫。',
+ agent:'放在 .claude/agents/ 的檔案和終端機版共用。在應用程式裡只要拜託它「用〇〇代理來做」就會使用。',
+ mcp:'想用 GUI 連接的話，用 + → Connectors。其他情況請編輯 .mcp.json 等設定檔，或在應用程式內建的終端機執行 claude mcp add。',
+ hook:'設定檔（settings.json）和終端機版共用。寫在這裡，應用程式裡也有效。',
+ config:'CLAUDE.md 和 settings.json 和終端機版共用，應用程式也會讀取。',
+ auto:'應用程式只能用來對話，不能執行 claude -p 之類的腳本。定期執行請用應用程式的排程任務（本機）或雲端的 routine。用內建終端機的話就能執行。',
+ prompt:'可以直接貼到輸入欄送出。也可以用 @ 指定檔案。',
+ key:'應用程式以畫面操作為主。模式切換可以用送出按鈕旁的選擇器。',
+ recipe:'指示的部分直接貼上送出。shell 的指令可以在應用程式內建的終端機執行。',
+ trouble:'可以從 / 呼叫同名的指令。修改設定檔請用應用程式內的編輯器或終端機。'};
+var APPX=[
+ ['/init','在輸入欄輸入 /init 並送出。'],
+ ['/clear','在應用程式裡，用「+ New session」開始新的對話比較方便。'],
+ ['/btw','按 Cmd+;（Windows 是 Ctrl+;）會開啟側邊聊天。不會留在主對話裡。'],
+ ['/model','用送出按鈕旁的模型下拉選單切換。'],
+ ['/mcp','在 + → Connectors，或 Settings → Connectors 管理。'],
+ ['/permissions','應用程式裡不能用。請用送出按鈕旁的許可模式（Manual / Accept edits / Plan / Auto）切換。'],
+ ['/config','會開啟 Settings → Claude Code。'],
+ ['/plugin','+ → Plugins → Add plugin（安裝）/ Manage plugins（管理）。'],
+ ['/schedule','在應用程式裡，用排程任務（本機執行）或雲端的 routine 就能做到同樣的事。'],
+ ['/loop','在應用程式裡也能從 / 使用。想在關掉電腦後繼續的話，請用雲端的 routine。'],
+ ['/install-github-app','這是在終端機裡的安裝精靈。可以在應用程式內建的終端機執行。'],
+ ['規劃模式','在送出按鈕旁的許可模式選擇 Plan。'],
+ ['worktree','如果是 Git 儲存庫，就選分支名稱旁邊的 worktree 選項。'],
+ ['claude -p','應用程式裡不能用（只能對話）。用內建終端機的話就能執行。'],
+ ['無頭模式','應用程式裡不能用（只能對話）。用內建終端機的話就能執行。'],
+ ['管線','應用程式裡不能用（只能對話）。用內建終端機的話就能執行。'],
+ ['Shift+Tab','用送出按鈕旁的許可模式選擇器切換。'],
+ ['安裝','只用應用程式的人，多半不需要輸入這個指令。'],
+ ['在專案中啟動','在應用程式裡，只要在 Code 分頁選擇「Project folder」就好。'],
+ ['接續上次繼續','在應用程式裡，從側邊欄選擇過去的工作階段，就能接著繼續。'],
+ ['Connectors','點 + 並選擇 Connectors。支援 Slack、GitHub、Linear、Notion、Google Calendar 等。'],
+ ['什麼是外掛','從 + → Plugins → Add plugin 開啟的清單中挑選就行。不需要輸入指令。']];
+I.forEach(function(x){
+ x.app='';
+ var hay=x.t+' '+x.en+' '+x.code.slice(0,80);
+ for(var i=0;i<APPX.length;i++){if(hay.indexOf(APPX[i][0])>=0){x.app=APPX[i][1];break}}
+});
+
+/* ===== 執行示意（模擬） u=輸入 a=Claude 的動作 o=輸出 d=成品 ===== */
+var SIMS=[
+['/init',['u:/init','a:正在讀取資料夾（12 個檔案）','a:已建立 CLAUDE.md','o:- 專案概要\n- 建置與測試的指令\n- 程式碼規範的草稿','o:請確認內容，再補上自己的規則。']],
+['/clear',['u:/clear','o:已重置對話。可以開始新的對話了。']],
+['/compact',['u:/compact 請務必保留已修改的檔案清單與未解決的 TODO','a:正在摘要對話…','o:180,000 → 21,000 token 壓縮完成。','o:保留的內容: 變更檔案 6 個 / 未解決 TODO 3 項']],
+['/rewind',['u:/rewind','o:要回到哪個時間點？','o:  ▶ 前 3 個請託之前（取消 4 個檔案變更）','o:    前 1 個請託之前','a:已將檔案與對話還原成原本的狀態。']],
+['/loop',['u:/loop 5m 確認部署狀態，如果失敗就告訴我原因','a:每 5 分鐘執行一次','o:[10:00] 部署進行中（建置中）','o:[10:05] 完成。沒有錯誤','o:[10:10] 完成。沒有錯誤']],
+['/schedule',['u:/schedule 平日早上 8 點，摘要 5 則 AI 業界最新新聞並加到 Notion','a:即將建立定期任務。請確認內容','o:名稱: 晨報 / 頻率: 平日 08:00 / 執行位置: 雲端','a:已建立。下次是明天 08:00。']],
+['/goal',['u:/goal 持續修正，直到測試全部通過','a:已設定目標','o:[第 1 次] 失敗 5 項 → 修正','o:[第 2 次] 失敗 2 項 → 修正','o:[第 3 次] 失敗 0 項。已達成目標。']],
+['/code-review',['u:/code-review','a:正在確認差異（4 個檔案）','o:嚴重 1 項  src/api.js:42  沒有驗證輸入值，遇到不正確的值會當機','o:需修正 2 項 / 建議 3 項','o:加上 --fix 就能自動修正。']],
+['/context',['u:/context','o:■■■■■■■■■■■■□□□□□□□□ 61%','o:對話 38% / 工具定義 14% / CLAUDE.md 9%','o:建議: 用 /compact 壓縮大型的工具輸出']],
+['技能的做法',['u:/my-skill 在這裡寫參數','a:讀取 ~/.claude/skills/my-skill/SKILL.md','a:依照步驟執行…','o:$ARGUMENTS 裡放進了「在這裡寫參數」。']],
+['整理會議記錄',['u:/minutes 今天的例會。小 A 下週前提出報價。設計定案用 B 案。預算保留…','a:正在整理筆記','d:【決議事項】\n、設計按 B 案進行\n【TODO】\n負責人 小 A / 期限 下週 / 提交報價\n【未決】\n、預算（延到下次）\n【意思模糊的地方】\n、「下週」的具體日期']],
+['自動產生週報',['u:/weekly-report ./daily','a:正在讀取 daily 資料夾的 5 個檔案','d:【本週成果】\n、發布新文章 3 篇（總瀏覽量 4,200）\n【卡關的地方】\n、LINE 推播的開信率下降\n【下週預定】\n1. 推播文案的 A/B 測試\n2. 2 支影片腳本\n【想討論的事】\n、外包的預算額度']],
+['競品、市場調查',['u:/research 台灣記帳 App 的收費比較','a:正在搜尋（8 筆）','a:正在確認官方網站的收費頁面','d:【結論】主流是附免費額度。付費方案落在每月 NT$100～200 的價位\n【比較表】\nA 公司 免費/每月 NT$150\nB 公司 免費/每月 NT$99\nC 公司 只有每月 NT$190\n【出處】各公司的官方收費頁面（附取得日期）\n【未確認】C 公司的年繳折扣']],
+['改寫文章',['u:/rewrite draft.md','a:正在讀取 draft.md','o:已儲存 draft_rewrite.md','d:【修改的地方】\n、把一句話拆成 60 字以內\n、把結論移到開頭\n、消除句尾連續重複的情形']],
+['回信草稿',['u:/reply 對方來信說想更改下週的會議日期…','d:方案 A（禮貌） 主旨: Re: 關於更改日期的討論\n感謝您的來信。\n方案 B（簡潔） 了解了。以下的候選時間可以嗎？\n方案 C（緩和） 謝謝您的體貼。我來調整。\n【想確認的事】候選日期有幾天？']],
+['CSV、試算表資料',['u:/clean-data customers.csv','a:正在統計 customers.csv（1,240 列）','o:缺漏 38 項 / 重複 21 項 / 寫法不一致 6 種（「股份有限公司」與「(股)」等）','o:我會提出修正規則方案。請核准。','u:核准','a:已儲存 cleaned_customers.csv。變更紀錄輸出到 changes.csv。']],
+['請款單、收據',['u:/sort-files ~/Downloads','o:移動前 → 移動後（部分）','o:scan001.pdf → 2026-09-30_A 公司_請款單.pdf','o:IMG_204.jpg → 2026-10-02_計程車_收據.jpg','o:在我回答「執行」之前，什麼都不會動。']],
+['大量產出社群貼文',['u:/sns blog.md','d:X（3 個方案）\n1. 你還在花 30 分鐘做會議記錄嗎？…\nInstagram\n前 2 行 + 8 個主題標籤\nLINE 推播\n200 字 + 促使行動的一句話']],
+['每天早上的新聞摘要',['u:/morning 生成式 AI','a:正在搜尋過去 24 小時的新聞','d:【晨報 10/13】\n1. 新模型發表 ― 有什麼改變\n2. 管制動向 ― 對業者的影響\n（每個項目都附出處網址）\n【今天要做的事】確認競爭對手的收費調整']],
+['修正 Issue',['u:/fix-issue 123','a:執行 gh issue view 123','a:原因: 陣列為空時參照了 index 0','a:新增會失敗的測試 → 修正 → 執行測試','o:12 passed','a:要 commit 嗎？']],
+['commit 訊息',['u:/commit','a:確認 git status 與 git diff','o:feat(auth): 新增登入失敗時的錯誤顯示\n\n原因: 看不出失敗原因，導致詢問變多','a:已 commit（沒有 push）。']],
+['安裝官方技能集',['u:/plugin marketplace add anthropics/skills','o:Successfully added marketplace','u:/plugin install document-skills@anthropic-agent-skills','o:Plugin is now active.']],
+['Office 類技能',['u:請讀取 銷售.xlsx，新增一張附有每月趨勢圖表的工作表。另存新檔','a:讀取 銷售.xlsx（12 個月份）','a:新增「每月趨勢」工作表與圖表','o:已儲存 銷售_附圖表.xlsx（原始檔案沒有變動）']],
+['Notion',['u:請從 Notion 找出上週的會議記錄並摘要','a:執行 notion-search','a:找到 3 筆。讀取「例會 10/06」','d:【摘要】\n、預算維持不變\n、新企劃下個月開始\n【TODO】小 A 分享資料']],
+['Playwright',['u:打開 http://localhost:3000，用手機寬度找出版面跑掉的地方','a:啟動瀏覽器（寬 390px）','a:標題列的選單超出，變成兩行','o:已儲存 screenshot_mobile.png','a:修正方案: 把導覽列改成收合選單']],
+['GitHub',['u:請把還沒處理的 Issue 依優先順序整理','a:用 GitHub MCP 取得 Issue 清單（24 筆）','d:【高】#88 付款失敗\n【中】#91 修改通知文字\n【低】#70 README 的錯字']],
+['MCP 的基本',['u:claude mcp add --transport http notion https://mcp.notion.com/mcp','o:Added HTTP MCP server notion','u:/mcp','o:notion  需要登入  → 按 Enter 開始驗證']],
+['輸入等待時顯示桌面通知',['a:Claude 正在等待許可…（正在用別的應用程式作業）','o:🔔 通知: Claude Code needs your attention']],
+['編輯後自動排版',['a:Edit app.js','o:[hook] prettier --write app.js','o:已排版 app.js（統一引號）']],
+['阻擋編輯重要檔案（註冊）',['u:請在 .env 加上註解','a:嘗試執行 Edit .env','o:[hook] Blocked: .env matches protected pattern \'.env\'','a:.env 受到保護，無法編輯。我會提出其他做法。']],
+['權限設定',['a:嘗試執行 Bash(git push)','o:因為符合 deny 規則而被拒絕','a:不 push，只做到 commit 為止。']],
+['無頭模式執行',['u:$ claude -p "用 3 行摘要 README.md"','o:這個專案是執行◯◯的 CLI 工具。\n導入只要 npm install。\n用法請參考 docs/。']],
+['批次處理檔案的迴圈',['o:$ for f in notes/*.md; do claude -p ... ; done','o:[1/100] notes/a.md → out/a.md','o:[2/100] notes/b.md → out/b.md','o:…','o:[100/100] 完成。out/ 裡有 100 個檔案']],
+['探索→規劃→實作→commit',['u:我想修正驗證相關的部分','a:我先讀取相關檔案（還不寫程式碼）','o:計畫: 1. 新增驗證函式  2. 修改呼叫端  3. 新增測試','a:等待你的核准','u:OK','a:實作 → 12 項測試通過 → commit']],
+['讓它來問需求',['u:我想做記帳 App。請用 AskUserQuestion 問我問題','a:提問（1/3） 主要使用者是誰？','o:  ▶ 個人  家庭  小型事業','a:提問（2/3） 輸入方式是？','o:  ▶ 手動輸入  拍收據  銀行連動']],
+['researcher',['u:請用 researcher 代理調查 3 家競爭對手的收費方案','a:啟動 researcher（在另一個工作空間搜尋中）','a:只會把重點帶回主對話','d:【結論】3 家都是月費制。最便宜的是 B 公司\n【依據、出處網址】…\n【未確認】年繳的折扣']],
+['程式碼審查員',['u:請審查這些變更','a:啟動 code-reviewer（唯讀）','o:嚴重 0 / 需修正 2 / 建議 1','o:src/user.js:18 遇到 null 時會當掉']],
+['規劃模式',['o:⏸ plan mode on（Shift+Tab 切換）','u:我想重做驗證功能','a:不更動檔案，先調查並只提出計畫','o:計畫: 1. 整理工作階段管理 2. …','a:要照這個計畫進行嗎？']],
+['CLAUDE.md 範本（工作',['a:開始作業時讀取 CLAUDE.md','o:文風: 親切自然的口吻 / 一句 60 字 / 結論先寫','a:依照規則重寫稿件。原始檔案另存新檔。']],
+['/plugin',['u:/plugin install commit-commands@claude-plugins-official','o:新增的項目: commands 3 項  / 每個回合 +120 tokens','o:選擇範圍 ▶ Install for you (user scope)','o:Plugin is now active.']],
+['commit-commands',['u:/commit-commands:commit','a:確認變更後已建立 commit']],
+['技能沒有出現在 / 的清單裡',['u:/skills','o:minutes     ~/.claude/skills/minutes','o:weekly-report ~/.claude/skills/weekly-report','o:（找不到 research → 確認資料夾名稱與 SKILL.md 的拼法）']],
+['運作很慢',['u:/context','o:■■■■■■■■■■■■■■■■■□□□ 88%','a:差不多該摘要了','u:/compact 請保留決定事項','o:從 88% 降到 24% 了']]
+];
+SIMS.push(['什麼是外掛',SIMS.filter(function(p){return p[0]==='/plugin'})[0][1]]);
+SIMS.forEach(function(p){
+ var f=-1,i;
+ for(i=0;i<I.length;i++){if(I[i].t===p[0]){f=i;break}}
+ if(f<0)for(i=0;i<I.length;i++){if(I[i].t.indexOf(p[0])===0){f=i;break}}
+ if(f<0)for(i=0;i<I.length;i++){if(I[i].t.indexOf(p[0])>=0||(I[i].en&&I[i].en===p[0])){f=i;break}}
+ if(f>=0)I[f].sim=p[1];
+});
+/* 圖解與圖示（細線、單一強調色） */
+var IC={
+ start:'<circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/>',
+ slash:'<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M14.5 8l-5 8"/>',
+ plugin:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+ 'skill-biz':'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 15.5h6M9 8.5h2"/>',
+ 'skill-dev':'<path d="M8.5 7L3.5 12l5 5M15.5 7l5 5-5 5M13.5 5l-3 14"/>',
+ agent:'<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.6-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><circle cx="17.5" cy="10" r="2"/><path d="M16 14.6c2.3-.2 4 .9 4.5 3.4"/>',
+ mcp:'<circle cx="5.5" cy="12" r="2.5"/><circle cx="18.5" cy="6" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/><path d="M8 11l8.2-3.8M8 13l8.2 3.8"/>',
+ hook:'<path d="M12 3v9.5a4 4 0 1 1-4-4"/><circle cx="12" cy="3" r="1.2"/>',
+ config:'<path d="M4 7h9M17 7h3M4 17h3M11 17h9M4 12h16"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
+ auto:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+ prompt:'<path d="M4 5.5h16v10H12l-4.5 3.5V15.5H4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+ key:'<rect x="3" y="6" width="18" height="12" rx="3"/><path d="M7 10h.01M11 10h.01M15 10h.01M8 14h8"/>',
+ recipe:'<path d="M12 4l9 4.5-9 4.5-9-4.5z"/><path d="M3 12.5l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5"/>',
+ trouble:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/>',
+ arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ file:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ spark:'<path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/>',
+ folder:'<path d="M3.5 6.5h6l2 2.5h9v9.5h-17z"/>',
+ db:'<ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6M5 12c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8"/>',
+ shield:'<path d="M12 3l7 3v5.5c0 4.2-3 7.7-7 9.5-4-1.8-7-5.3-7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+ bell:'<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15zM10 21h4"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/>',
+ mail:'<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3.5 7.5L12 13.5l8.5-6"/>'
+};
+function ic(n,s){return '<svg class="ic" viewBox="0 0 24 24" width="'+(s||22)+'" height="'+(s||22)+'" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IC[n]||IC.spark)+'</svg>'}
+/* 各章的流程圖 [圖示,標籤,補充] */
+var DIAG={
+ start:[['folder','選擇資料夾','決定作業範圍'],['prompt','寫下指示','用中文就行'],['check','確認結果','告訴它想修改的地方']],
+ slash:[['slash','輸入 /','跳出候選'],['spark','選擇指令','附上參數'],['check','執行','回傳結果']],
+ plugin:[['globe','發布來源','marketplace'],['plugin','安裝','/plugin install'],['slash','多出 /名稱','馬上能用']],
+ 'skill-biz':[['file','貼上筆記','/minutes ＋ 內文'],['skill-biz','SKILL.md 的步驟','照設定好的格式處理'],['check','整齊的輸出','會議記錄、週報等']],
+ 'skill-dev':[['slash','/commit','參數或 Issue 編號'],['skill-dev','帶入狀態','自動取得 git diff'],['check','作業完成','commit、PR']],
+ agent:[['prompt','交給主體','「用 researcher」'],['agent','在另一個空間作業','搜尋、讀取'],['check','只把重點帶回來','對話不會被弄髒']],
+ mcp:[['spark','Claude','接收指示'],['mcp','MCP','共用窗口'],['db','外部服務','Notion、資料庫、瀏覽器']],
+ hook:[['file','編輯檔案','Claude 的操作'],['hook','Hook 觸發','在指定的時機一定會執行'],['check','自動處理','排版、通知、保護']],
+ config:[['config','CLAUDE.md','每次都會讀取'],['shield','允許與禁止','settings.json'],['check','照規則運作','預防意外']],
+ auto:[['auto','定期、迴圈','/schedule /loop'],['skill-dev','claude -p','不開畫面執行'],['file','儲存結果','檔案、Notion']],
+ prompt:[['folder','探索','先閱讀'],['config','規劃','等待核准'],['skill-dev','實作','動手做'],['check','驗證','執行確認']],
+ key:[['key','Shift+Tab','切換模式'],['arrow','Esc','停止、倒回'],['file','@檔案','給它參考資料']],
+ recipe:[['skill-biz','技能','把步驟制式化'],['mcp','MCP','連接外部'],['auto','定期執行','自動運轉']],
+ trouble:[['trouble','看症狀','發生了什麼事'],['config','確認設定','/doctor、/mcp'],['check','修好了','補上防止再犯的規則']]
+};
+function diag(c){
+ var d=DIAG[c];if(!d)return '';
+ return '<div class="dg" aria-hidden="true">'+d.map(function(n,i){return (i?'<span class="dgl" style="--d:'+i+'"></span>':'')+'<div class="dgn" style="--i:'+i+';--n:'+d.length+'"><span class="dgi">'+ic(n[0],24)+'</span><b>'+n[1]+'</b><small>'+n[2]+'</small></div>'}).join('')+'</div>';
+}
+/* 運作原理圖（新增分頁） */
+var VIZ2={
+ tabs:[['skillv','技能的運作'],['ctx','對話的容量'],['mode','許可模式'],['sub','分身的運作方式']],
+ html:function(){
+  return ''
+  +'<div class="panel" data-p="skillv" hidden><div class="stage" id="skstage"><div class="sk-a"><div class="chipbox"><i>1</i><b>你輸入</b><code>/minutes 今天的例會…</code></div></div><div class="sk-arrow">'+ic('arrow',20)+'</div><div class="sk-b"><div class="chipbox"><i>2</i><b>讀取 SKILL.md</b><div class="sheet"><span></span><span></span><span></span><span></span></div></div></div><div class="sk-arrow">'+ic('arrow',20)+'</div><div class="sk-c"><div class="chipbox"><i>3</i><b>用設定好的格式輸出</b><div class="outline"><em>決議事項</em><em>TODO</em><em>未決事項</em></div></div></div></div><p class="hint" style="display:flex;gap:10px;align-items:center"><button class="go" id="skplay">▶ 再播放一次</button><span>技能只是「先讀步驟書再行動」。先把格式訂好，每次品質都會一致。</span></p></div>'
+  +'<div class="panel" data-p="ctx" hidden><div class="gauge"><div class="gbar"><i id="gfill"></i><span id="gpct">12%</span></div><div class="gmarks"><span>還有餘裕</span><span>有點多</span><span>快滿了</span></div></div><div class="gbtns"><button class="go" data-g="work">＋ 繼續作業</button><button class="go" data-g="compact">/compact 摘要並壓縮</button><button class="go" data-g="clear">/clear 重置</button></div><div class="mcpmsg" id="gmsg">越是繼續作業，記憶的容量（上下文）就會被越填越滿。</div></div>'
+  +'<div class="panel" data-p="mode" hidden><div class="modes" id="modes"></div><div class="mcpmsg" id="modemsg"></div></div>'
+  +'<div class="panel" data-p="sub" hidden><div class="subd"><div class="lane"><b>主對話</b><div class="track"><span class="m1">請託</span><span class="m2">等待</span><span class="m3">收到重點</span></div></div><div class="lane alt"><b>分身（子代理）</b><div class="track"><span class="s1">搜尋 12 筆</span><span class="s2">讀取</span><span class="s3">摘要</span></div></div></div><p class="hint">冗長的搜尋結果或大量讀取的內容，都由分身這邊處理。回到主對話的只有重點，所以能節省容量。</p></div>';
+ },
+ MODES:[['Manual','邊確認邊做','每次編輯檔案或執行指令都會徵求許可。',2,'還不熟悉、處理重要資料的時候'],['Accept edits','自動編輯','編輯檔案與一般的檔案操作不需確認。',3,'在信任的資料夾作業的時候'],['Plan','只做計畫','不更動檔案，只提出調查與計畫。',5,'大幅度變更之前、規格模糊的時候'],['Auto','省略確認','省略固定的確認，在背景判斷安全性並繼續進行。',3,'步驟已經確定、想放手交給它的時候']],
+ bind:function(){
+  var m=document.getElementById('modes');if(!m)return;
+  var self=this;
+  m.innerHTML=this.MODES.map(function(x,i){var bars='';for(var k=1;k<=5;k++)bars+='<i'+(k<=x[3]?' class="on"':'')+'></i>';return '<button data-i="'+i+'" aria-pressed="'+(i===0)+'"><b>'+x[0]+'</b><small>'+x[1]+'</small><span class="bars" title="安全程度">'+bars+'</span></button>'}).join('');
+  var show=function(i){var x=self.MODES[i];[].forEach.call(m.children,function(b,j){b.setAttribute('aria-pressed',j===i)});document.getElementById('modemsg').innerHTML='<b>'+x[0]+'</b><br>'+x[2]+'<br><span style="color:var(--muted)">適合的場合 '+x[4]+'</span>'};
+  m.addEventListener('click',function(e){var b=e.target.closest('button');if(b)show(+b.getAttribute('data-i'))});show(0);
+  var g=0;
+  var set=function(v,msg){g=Math.max(4,Math.min(98,v));var f=document.getElementById('gfill');f.style.width=g+'%';f.className=g>80?'hi':g>55?'mid':'';document.getElementById('gpct').textContent=Math.round(g)+'%';if(msg)document.getElementById('gmsg').textContent=msg};
+  set(12);
+  document.querySelector('[data-p="ctx"]').addEventListener('click',function(e){var b=e.target.closest('[data-g]');if(!b)return;var k=b.getAttribute('data-g');
+   if(k==='work')set(g+22,g>=76?'已經用掉不少了。在變遲鈍之前，用 /compact 當作參考時機。':'作業越進行，歷史紀錄就越多。');
+   if(k==='compact')set(g*0.28,'已保留重點並壓縮。附上「希望保留的內容」就不會漏掉。');
+   if(k==='clear')set(4,'完全清空的狀態。換話題的時候這是最確實的做法。')});
+  var sk=document.getElementById('skstage');
+  var play=function(){sk.classList.remove('run');void sk.offsetWidth;sk.classList.add('run')};
+  document.getElementById('skplay').addEventListener('click',play);
+  this.play=play;
+ }
+};
+(function(){
+function $(s,e){return (e||document).querySelector(s)}
+function $$(s,e){return Array.prototype.slice.call((e||document).querySelectorAll(s))}
+var toastT;
+function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('show')},1500)}
+function copyText(txt){
+ function fb(){var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('已複製')}catch(e){toast('請長按選取後複製')}ta.remove()}
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast('已複製')},fb)}else fb();
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function norm(s){return String(s).toLowerCase()}
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ===== 環境（終端機/應用程式） ===== */
+var mode='term';
+try{var sv=localStorage.getItem('cc-mode');if(sv==='app')mode='app'}catch(e){}
+function setMode(m){mode=m;document.body.setAttribute('data-mode',m);try{localStorage.setItem('cc-mode',m)}catch(e){}
+ $$('.seg button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-m')===m)});
+ three();route();hint();}
+function hint(){}
+function three(){
+ var T=[['01','安裝','貼到終端機執行（Mac / Linux / WSL）','curl -fsSL https://claude.ai/install.sh | bash'],['02','在作業資料夾啟動','只有那個資料夾裡面是作業範圍','cd 作業資料夾 && claude'],['03','先輸入 /init','讓它自動建立交接筆記（CLAUDE.md）','/init']];
+ var A=[['01','開啟應用程式','啟動 Claude 的桌面應用程式，選擇 Code 分頁','Code 分頁'],['02','選擇資料夾','在輸入欄的「Project folder」指定作業資料夾，按 Enter 送出','Project folder'],['03','先輸入 /init','在輸入欄輸入並送出。會建立交接筆記（CLAUDE.md）','/init']];
+ var L=mode==='app'?A:T;
+ $('#three').innerHTML=L.map(function(x){return '<li><b><span>'+x[0]+'</span>'+esc(x[1])+'</b><p>'+esc(x[2])+'</p><div class="mini"><code>'+esc(x[3])+'</code>'+(mode==='app'&&x[0]!=='03'?'':'<button class="copy" data-t="'+esc(x[3])+'">複製</button>')+'</div></li>'}).join('');
+}
+
+/* ===== 新手路線、5 個詞 ===== */
+var FIVE=[['skill-biz','技能','常做的作業的「步驟書」','例 先做好一份整理會議記錄的步驟'],['mcp','MCP','連接外部服務的「插座」','例 可以讀寫 Notion 的筆記'],['hook','Hook','在指定時機一定會動作的「自動規則」','例 每次編輯都自動排版'],['agent','子代理','負責查資料的「助手」','例 請它在另一個空間進行競品調查'],['plugin','外掛','以上 4 個的「綜合包」','例 只要安裝就會多出方便的功能']];
+var ROUTE=[
+ ['安裝（macOS','先安裝','只用應用程式的人不需要'],
+ ['在專案中啟動','在作業資料夾啟動','只有那個資料夾是作業範圍'],
+ ['最先輸入的 /init','建立交接筆記','CLAUDE.md 會自動產生'],
+ ['/clear 重置對話','話題換了就整理','光是這樣，精準度和成本就會穩定'],
+ ['規劃模式','不放心的時候「只做計畫」','不更動檔案，讓它先提出方案','claude --permission-mode plan'],
+ ['技能的做法','做一份步驟書','會議記錄、週報等完成的範本，可以直接儲存','@skill-biz'],
+ ['應用程式的「Connectors」','連接外部服務','Notion、Slack、日曆等','claude mcp add --transport http notion https://mcp.notion.com/mcp'],
+ ['/schedule 定期執行','讓每天的作業自動運轉','用 /schedule 完全自動']];
+function find(t){for(var i=0;i<I.length;i++){if(I[i].t.indexOf(t)===0)return i}return -1}
+function route(){
+ $('#five').innerHTML=FIVE.map(function(f){return '<li><span class="fi">'+ic(f[0],22)+'</span><b>'+esc(f[1])+'</b><em>'+esc(f[2])+'</em><small>'+esc(f[3])+'</small></li>'}).join('');
+ $('#route').innerHTML=ROUTE.map(function(r,k){var i=find(r[0]);var x=I[i];if(!x)return '';var isApp=mode==='app';
+  var hint=isApp&&x.app?x.app:r[2];
+  var skip=isApp&&(k===0||k===1||k===4),code=r[3]||x.code.split('\n')[0],body='';
+  if(skip)body='';
+  else if(code.charAt(0)==='@')body='<button class="go" data-c="'+code.slice(1)+'">看範本</button>';
+  else if(isApp&&k===6)body='<button class="go" data-c="mcp">看連線清單</button>';
+  else body='<div class="mini"><code>'+esc(code)+'</code><button class="copy" data-t="'+esc(code)+'">複製</button></div>';
+  return '<li class="rt"><span class="rn">'+(k+1)+'</span><div class="rb"><b>'+esc(r[1])+'</b><p>'+esc(hint)+'</p>'+body+'</div></li>'}).join('');
+}
+/* ===== 從想做的事找起 ===== */
+var GOALS=[
+ ['想整理會議記錄、筆記','技能「/minutes」最快。只要貼上會議筆記，就會整理成決議事項、TODO、未決事項。如果想送到 Notion，就把 MCP 的 Notion 和配方「會議筆記 → 會議記錄 → Notion」組合起來。',[['skill-biz','業務技能'],['recipe','配方']]],
+ ['想做 Excel、PowerPoint、PDF','安裝官方技能集（document-skills）之後，就能讀取、製作、修改檔案。安裝方式請看外掛那一章。',[['plugin','外掛']]],
+ ['想連接 Notion、Slack、日曆','用應用程式的話，+ → Connectors 只要按按鈕就好。用終端機的話，是 claude mcp add 一行指令。',[['mcp','MCP 連線']]],
+ ['想讓每天、每週的作業自動運轉','做好技能之後用 /schedule 定期執行。大量檔案就用迴圈跑 claude -p。',[['auto','自動化'],['recipe','配方']]],
+ ['擔心出意外。想安全地放手交給它','先用規劃模式只讓它提出計畫，再用權限設定禁止危險的操作。用 Hook 保護重要檔案。',[['config','設定'],['hook','Hook']]],
+ ['想維持程式碼品質','組合審查專用的子代理、commit 類外掛，以及編輯後自動排版的 Hook，是經典做法。',[['agent','子代理'],['plugin','外掛'],['hook','Hook']]],
+ ['該從哪裡開始？','安裝（或開啟應用程式）→ 選擇資料夾 → /init。接下來只要記住內建指令的 /clear 和 /compact 就夠了。',[['start','開始使用'],['slash','內建指令']]]];
+function goals(){
+ $('#goals').innerHTML=GOALS.map(function(g,i){return '<button data-i="'+i+'" aria-pressed="false">'+esc(g[0])+'</button>'}).join('');
+ showGoal(6,true);
+}
+function showGoal(i,quiet){
+ $$('#goals button').forEach(function(b,j){b.setAttribute('aria-pressed',j===i)});
+ var g=GOALS[i];
+ $('#ans').innerHTML='<div>'+esc(g[1])+'</div><div class="lk">'+g[2].map(function(c){return '<button class="go" data-c="'+c[0]+'">'+esc(c[1])+'的實際範例</button>'}).join('')+'</div>';
+}
+
+/* ===== 看懂運作方式 ===== */
+var TABS=[['four','4 者的差異'],['tree','存放位置'],['hook','Hook 的流程'],['mcp','MCP 的連結'],['app','應用程式畫面']].concat(VIZ2.tabs);
+var TREE=[
+ {id:'claudemd',d:0,n:'CLAUDE.md',sc:'專案',role:'每次都會讀取的交接筆記',when:'每次開始對話都會自動讀取',who:'在這個資料夾作業的所有人（用 Git 共用）',tip:'簡短，只寫希望大家遵守的規則。太長容易被忽略。',cat:'config'},
+ {id:'mcpjson',d:0,n:'.mcp.json',sc:'專案',role:'MCP 連線設定（團隊共用）',when:'啟動時',who:'開啟這個資料夾的所有人',tip:'金鑰用環境變數傳遞，不要直接寫在檔案裡。',cat:'mcp'},
+ {id:'claudedir',d:0,n:'.claude/',dir:1},
+ {id:'settings',d:1,n:'settings.json',sc:'專案',role:'允許、禁止、Hook、外掛的設定',when:'啟動時',who:'在這個資料夾作業的所有人',tip:'deny 的優先順序高於 allow。',cat:'config'},
+ {id:'local',d:1,n:'settings.local.json',sc:'只有自己',role:'只在自己電腦上的設定覆寫',when:'啟動時',who:'只有自己（不納入 Git）',tip:'個人想允許的指令放在這裡。',cat:'config'},
+ {id:'skill',d:1,n:'skills/minutes/SKILL.md',sc:'專案',role:'技能（步驟書）。可用 /minutes 呼叫',when:'用 /名稱 呼叫，或是符合說明文字時 Claude 會自動使用',who:'在這個資料夾作業的所有人',tip:'重點是在 description 寫上「何時使用」。',cat:'skill-biz'},
+ {id:'agent',d:1,n:'agents/researcher.md',sc:'專案',role:'子代理（專門的分身）',when:'拜託它「用 researcher 查」的時候，或是自動委派',who:'在這個資料夾作業的所有人',tip:'用 tools 把可用的工具縮小範圍，比較安全。',cat:'agent'},
+ {id:'hookfile',d:1,n:'hooks/protect-files.sh',sc:'專案',role:'從 Hook 呼叫的腳本',when:'在 settings.json 登錄的時機',who:'在這個資料夾作業的所有人',tip:'需要用 chmod +x 設定執行權限。',cat:'hook'},
+ {id:'home',d:0,n:'~/.claude/',dir:1,sc:'所有專案共用'},
+ {id:'hskill',d:1,n:'skills/ 、 settings.json 、 CLAUDE.md',sc:'自己用',role:'自己專用的技能、設定、備忘',when:'不管在哪個資料夾啟動',who:'只有自己',tip:'個人用的技能放在這裡，在任何專案都能用。',cat:'skill-biz'}];
+var HOOKS=[
+ ['SessionStart','工作階段開始','對話開始（或是剛被壓縮）之後','壓縮後提醒它規則。',"echo 'Reminder: use Bun, not npm.'"],
+ ['PreToolUse','執行之前','Claude 即將編輯檔案或執行指令之前。可以在這裡攔下（exit 2）','拒絕編輯 .env。','Blocked: .env matches protected pattern'],
+ ['','工具執行','Claude 編輯檔案','',''],
+ ['PostToolUse','執行之後','編輯或指令剛結束之後','自動排版編輯過的檔案。','jq -r \'.tool_input.file_path\' | xargs npx prettier --write'],
+ ['Notification','等待輸入','Claude 在等待許可或輸入的時候','顯示桌面通知。','osascript -e \'display notification "Claude Code needs your attention"\''],
+ ['Stop','回應完成','Claude 做完作業停下來的時候','結束前先跑測試等最後檢查。','（想在完成時自動確認的處理）']];
+var SV=[['Notion','「從 Notion 找出上週的會議記錄並摘要」','claude mcp add --transport http notion https://mcp.notion.com/mcp'],['GitHub','「把還沒處理的 Issue 依優先順序整理」','claude mcp add-json github \'{...}\''],['資料庫','「列出上個月新使用者數，依日期呈現」','claude mcp add --transport stdio db -- npx -y @bytebase/dbhub --dsn "..."'],['瀏覽器','「打開我的網站，找出版面跑掉的地方」','claude mcp add --transport stdio playwright -- npx -y @playwright/mcp@latest']];
+var panels={};
+function viz(){
+ $('#tabs').innerHTML=TABS.map(function(t,i){return '<button class="tab" role="tab" data-t="'+t[0]+'" aria-selected="'+(i===0)+'">'+esc(t[1])+'</button>'}).join('');
+ var h='';
+ h+='<div class="panel" data-p="four"><div class="four">'
+ +'<div><span class="ic">'+ic('skill-biz',20)+'</span><b>技能</b><span class="when">呼叫就會動的步驟書</span><p>常做的作業的「步驟書」。用 /名稱 呼叫，或是內容符合時 Claude 會自動使用。</p><em>例 用 /minutes 整理會議記錄</em></div>'
+ +'<div><span class="ic">'+ic('mcp',20)+'</span><b>MCP</b><span class="when">通往外部世界的窗口</span><p>增加 Notion、GitHub、資料庫、瀏覽器等 Claude 可以直接操作的工具。</p><em>例 讀寫 Notion 的會議記錄</em></div>'
+ +'<div><span class="ic">'+ic('hook',20)+'</span><b>Hook</b><span class="when">一定會自動執行的規則</span><p>編輯前後或通知等，在指定時機一定會執行的處理。不是拜託，而是確實會動。</p><em>例 編輯後自動排版</em></div>'
+ +'<div><span class="ic">'+ic('agent',20)+'</span><b>子代理</b><span class="when">在另一個空間工作的分身</span><p>把查資料或審查交給另一個工作空間，只收下結果的重點。</p><em>例 請 researcher 做競品調查</em></div>'
+ +'<div><span class="ic">'+ic('plugin',20)+'</span><b>外掛</b><span class="when">以上的綜合包</span><p>把技能、Hook 等打包發送的盒子。只要安裝就能用。</p><em>例 commit-commands</em></div>'
+ +'</div></div>';
+ h+='<div class="panel" data-p="tree" hidden><div class="treewrap"><div><ul class="tree" id="tree"></ul></div><div class="tinfo" id="tinfo"></div></div><p class="hint">點選檔名，就會顯示它的角色與被讀取的時機。</p></div>';
+ h+='<div class="panel" data-p="hook" hidden><div class="tl" id="tl"></div><div class="tlbox" id="tlbox"></div><p class="hint" style="display:flex;gap:10px;align-items:center"><button class="go" id="tlplay">▶ 依序播放</button><span>點選各個階段也能查看。</span></p></div>';
+ h+='<div class="panel" data-p="mcp" hidden><div class="mcpd"><div class="node">Claude<small>接收你的指示</small></div><div class="wire"></div><div><div class="svcs" id="svcs"></div></div></div><div class="mcpmsg" id="mcpmsg"></div></div>';
+ h+='<div class="panel" data-p="app" hidden><div class="appmock"><div class="side"><span>+ New session</span><b>工作階段</b><span class="on">整理會議記錄</span><span>部落格稿件</span><b>管理</b><span>Customize</span></div><div class="main"><div class="hd"><span>Local</span><span>my-project</span></div><div class="chat" id="achat"><div class="bub me">幫我整理會議記錄</div><div class="bub">我會讀取筆記並整理。</div></div><div class="compose" id="comp"><div class="menu" id="amenu" hidden><button data-a="slash">Slash commands</button><button data-a="conn">Connectors</button><button data-a="plug">Plugins</button></div><div class="inp" id="ainp">輸入指示…  用 / 呼叫</div><div class="ctl"><button class="plus" id="aplus" aria-label="加號選單">+</button><button id="amodel">Sonnet</button><button class="mode" id="amode">Manual</button><button class="send">送出</button></div></div></div></div><p class="hint">這是示意圖。請試著按按看 + 和許可模式（細節與實際畫面不同）。</p><ol class="steps2"><li>+ → Slash commands，從清單選擇技能或指令</li><li>+ → Connectors，連接 Notion 或 Slack</li><li>+ → Plugins → Add plugin，安裝外掛</li><li>用許可模式的選擇器切換 Manual / Accept edits / Plan / Auto</li></ol></div>';
+ $('#panels').innerHTML=h+VIZ2.html();
+ // tree
+ $('#tree').innerHTML=TREE.map(function(n){var pad=n.d?'<span style="padding-left:'+(n.d*18)+'px"></span>':'';return '<li>'+pad+(n.dir?'<span class="dir">'+esc(n.n)+'</span><span class="sc">'+esc(n.sc||'')+'</span>':'<button data-n="'+n.id+'" aria-pressed="false">'+esc(n.n)+'</button><span class="sc">'+esc(n.sc)+'</span>')+'</li>'}).join('');
+ treeShow('skill');
+ // hook
+ $('#tl').innerHTML=HOOKS.map(function(x,i){return '<button data-i="'+i+'" aria-pressed="false"><i>'+(i+1)+'</i>'+esc(x[1])+'<small>'+(esc(x[0])||'&nbsp;')+'</small></button>'}).join('');
+ hookShow(1);
+ // mcp
+ $('#svcs').innerHTML=SV.map(function(s,i){return '<button data-i="'+i+'" aria-pressed="false">'+esc(s[0])+'</button>'}).join('');
+ mcpShow(0);VIZ2.bind();
+}
+function treeShow(id){
+ var n=TREE.filter(function(x){return x.id===id})[0];if(!n||n.dir)return;
+ $$('#tree button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-n')===id)});
+ $('#tinfo').innerHTML='<h3>'+esc(n.n)+'</h3><div class="row"><b>角色</b><span>'+esc(n.role)+'</span></div><div class="row"><b>被讀取的時機</b><span>'+esc(n.when)+'</span></div><div class="row"><b>生效範圍</b><span>'+esc(n.who)+'</span></div><div class="row"><b>一句話</b><span>'+esc(n.tip)+'</span></div><button class="go" data-c="'+n.cat+'">看實際範例</button>';
+}
+var hookT;
+function hookShow(i,play){
+ $$('#tl button').forEach(function(b,j){b.setAttribute('aria-pressed',j===i);b.classList.toggle('done',j<i)});
+ var x=HOOKS[i];
+ $('#tlbox').innerHTML=x[0]?'<b>'+esc(x[1])+'  <span style="font:500 11px var(--mono);color:var(--accent)">'+esc(x[0])+'</span></b><span>'+esc(x[2])+'</span><span>用途範例 '+esc(x[3])+'</span><code>'+esc(x[4])+'</code>':'<b>'+esc(x[1])+'</b><span>'+esc(x[2])+'。前後會執行 Hook。</span>';
+}
+function hookPlay(){
+ clearTimeout(hookT);var i=0;
+ (function step(){hookShow(i);i++;if(i<HOOKS.length)hookT=setTimeout(step,reduce?0:1300)})();
+}
+function mcpShow(i){
+ $$('#svcs button').forEach(function(b,j){b.setAttribute('aria-pressed',j===i)});
+ var s=SV[i];$('#mcpmsg').innerHTML='<b>'+esc(s[0])+'連接後</b><br>'+esc(s[1])+'<code>'+esc(s[2])+'</code>';
+}
+var modes=['Manual','Accept edits','Plan','Auto'],mi=0;
+function appMock(e){
+ var t=e.target.closest('button');if(!t)return;
+ if(t.id==='aplus'){var m=$('#amenu');m.hidden=!m.hidden;return}
+ if(t.id==='amode'){mi=(mi+1)%4;t.textContent=modes[mi];var ex=['邊確認邊進行','編輯檔案時不需確認，直接進行','不更動檔案，只擬定計畫','省略固定的確認，直接進行'];$('#achat').insertAdjacentHTML('beforeend','<div class="bub">許可模式「'+modes[mi]+'」 '+ex[mi]+'</div>');return}
+ if(t.id==='amodel'){t.textContent=t.textContent==='Sonnet'?'Opus':'Sonnet';return}
+ var a=t.getAttribute('data-a');
+ if(a){$('#amenu').hidden=true;var msg={slash:'會顯示可用的指令、技能、外掛指令清單（/minutes、/commit 等）。',conn:'選擇 Slack、GitHub、Linear、Notion、Google Calendar 等來連接。',plug:'「Add plugin」是外掛清單，「Manage plugins」可啟用、刪除。'}[a];$('#achat').insertAdjacentHTML('beforeend','<div class="bub">'+msg+'</div>')}
+}
+
+/* ===== 等級 ===== */
+var LVN=['','初級','中級','高級'];
+I.forEach(function(x){
+ var lv=2;
+ if(x.c==='start'||x.c==='key'||x.c==='trouble'||(x.hot&&x.biz&&x.c!=='hook'&&x.c!=='auto'&&x.c!=='agent'))lv=1;
+ if(x.c==='hook'||x.c==='agent'||(x.c==='auto'&&!x.biz)||(!x.biz&&x.c!=='slash'&&x.c!=='plugin'&&x.c!=='start'))lv=3;
+ if(x.c==='recipe'||x.c==='config')lv=2;
+ x.lv=lv;
+});
+/* ===== 卡片 ===== */
+var LEADS={start:'先從這裡開始。啟動與最初的設定。',slash:'以 / 開頭的操作。精選整理對話、倒回、定期執行等，記住了會拉開差距的功能。',
+plugin:'知名、熱門的外掛與技能集。只要安裝就會多出 /名稱。',
+'skill-biz':'只要放一個 SKILL.md 就會變成 /名稱 指令。適合會議記錄、週報、調查等行政作業。','skill-dev':'開發用的技能。也是 !`指令` 的帶入方式與 $ARGUMENTS 用法的範例。',
+agent:'專門的分身。不弄髒主對話，就能把調查或審查交給它。',mcp:'把外部服務變成 Claude 工具的機制。以一行就能連接的為主。',
+hook:'「一定要在這個時機執行」的處理。通知、自動排版、保護檔案等。',config:'每次都會讀取的指示書，以及允許、禁止的設定。',auto:'無畫面執行、定期執行、批次處理。是工作自動化的核心。',prompt:'可以直接貼上的指示文。安排步驟和確認的方式，決定了品質。',key:'只要記住 6 個就夠了。',
+recipe:'結合技能、MCP、定期執行的實務流程。對照上面的圖來看會更容易懂。',trouble:'容易卡住的地方，以及修正方法。'};
+var els={lv:$('#f-lv'),q:$('#q'),biz:$('#f-biz'),hot:$('#f-hot'),main:$('#main'),chips:$('#chips'),cnt:$('#cnt')};
+var cat='all';
+function card(x,i){
+ return '<article class="card" data-i="'+i+'"><div class="top">'+(x.hot?'<span class="badge">經典</span>':'')+(x.biz?'<span class="badge b2">行政適用</span>':'<span class="badge b2">適合開發</span>')+(x.en?'<span class="badge b2">'+esc(x.en)+'</span>':'')+'</div>'
+ +'<h3>'+esc(x.t)+'</h3><p class="desc">'+esc(x.d)+'</p>'
+ +(x.flow?'<ul class="flow">'+x.flow.map(function(f,k){return k?'<li style="--k:'+k+'"><span>'+esc(f)+'</span></li>':'<li style="--k:0">'+esc(f)+'</li>'}).join('')+'</ul>':'')
+ +'<p class="use"><b>應用範例</b>'+esc(x.u)+'</p>'
+ +(x.app?'<p class="appnote"><b>在應用程式裡</b>'+esc(x.app)+'</p>':'')
+ +(x.tags.length?'<ul class="tags">'+x.tags.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>':'')
+ +(x.sim?'<button class="runbtn" data-i="'+i+'" aria-expanded="false">▶ 查看執行示意</button><div class="sim" hidden></div>':'')
+ +'<div class="codebox"><div class="cb-h"><span>'+esc(x.path||(x.lang==='sh'?'終端機（應用程式是內建終端機）':x.lang===''?'貼到輸入欄':'程式碼'))+'</span><button class="copy" data-i="'+i+'">複製</button></div><pre>'+esc(x.code)+'</pre></div></article>';
+}
+function render(){
+ var q=norm(els.q.value.trim()),n=0,out='';
+ CATS.forEach(function(c){
+  if(cat!=='all'&&cat!==c[0])return;
+  var list=[];
+  I.forEach(function(x,i){
+   if(x.c!==c[0])return;
+   if(els.biz.checked&&!x.biz)return;
+   if(els.hot.checked&&!x.hot)return;
+   if(els.lv.checked&&x.lv!==1)return;
+   if(q){var hay=norm([x.t,x.en,x.d,x.u,x.code,x.tags.join(' '),x.app||''].join(' '));if(hay.indexOf(q)<0)return}
+   list.push([x,i]);
+  });
+  list.sort(function(p,q2){return (p[0].lv-q2[0].lv)||((q2[0].hot?1:0)-(p[0].hot?1:0))||(p[1]-q2[1])});
+  list=list.map(function(p){return card(p[0],p[1])});
+  if(!list.length)return;
+  n+=list.length;
+  out+='<section class="sec" id="s-'+c[0]+'"><h2><span class="hic">'+ic(c[0],26)+'</span>'+esc(c[1])+'<small>'+list.length+' 則</small></h2><p class="sec-lead">'+esc(LEADS[c[0]]||'')+'</p>'+diag(c[0])+(APPDEF[c[0]]?'<p class="appnote applead"><b>在應用程式裡</b>'+esc(APPDEF[c[0]])+'</p>':'')+'<div class="grid">'+list.join('')+'</div></section>';
+ });
+ els.main.innerHTML=out||'<p class="empty">找不到結果。請換個關鍵字試試。</p>';
+ els.cnt.textContent=n+' 則';
+}
+function chips(){
+ var all=[['all','全部']].concat(CATS);
+ els.chips.innerHTML=all.map(function(c){return '<button class="chip" data-c="'+c[0]+'" aria-pressed="'+(c[0]===cat)+'">'+(c[0]==='all'?'':ic(c[0],15))+esc(c[1])+'</button>'}).join('');
+}
+function goCat(c){cat=c;els.q.value='';els.biz.checked=false;els.hot.checked=false;chips();render();var b=$('#barTop');window.scrollTo({top:b.getBoundingClientRect().top+window.scrollY-2,behavior:reduce?'auto':'smooth'})}
+
+/* ===== 執行示意 ===== */
+var simTok=0;
+function playSim(box,lines){
+ var tok=++simTok;box.innerHTML='';var k=0;
+ function add(cls,txt){var d=document.createElement('div');d.className='l '+cls;d.textContent=txt;box.appendChild(d);return d}
+ function next(){
+  if(tok!==simTok&&box.getAttribute('data-tok')!==String(tok))return;
+  if(k>=lines.length)return;
+  var s=lines[k++],t=s.charAt(0),txt=s.slice(2);
+  var cls=t==='u'?'u':t==='a'?'a':t==='d'?'d':'o';
+  if(t==='u'&&!reduce){var d=add(cls,'');var j=0,cur=document.createElement('span');cur.className='cur';d.appendChild(cur);
+   (function typ(){if(j<txt.length){d.insertBefore(document.createTextNode(txt.charAt(j++)),cur);setTimeout(typ,txt.length>60?9:22)}else{cur.remove();setTimeout(next,380)}})();
+  }else{add(cls,txt);if(reduce)next();else setTimeout(next,t==='d'?900:520)}
+ }
+ box.setAttribute('data-tok',tok);next();
+}
+
+/* ===== 用語 ===== */
+var GL=[['技能','常做的作業的步驟書（SKILL.md）。可以用 /名稱 呼叫。'],['外掛','把技能、Hook、MCP 等打包起來發布用的盒子。'],['MCP','讓 Claude 能接觸外部服務或資料庫的共通機制。'],['Hook','在固定時機一定會自動執行的處理。'],['子代理','在另一個工作空間運作的專門分身。只會帶回結果的重點。'],['CLAUDE.md','每次都會讀取的交接筆記。'],['上下文','Claude 一次能記住的量。在長對話中溢出的話，精準度會下降。'],['規劃模式','不更動檔案，只提出計畫的安全模式。'],['無頭模式','不開畫面，只執行一次並回傳結果的用法（claude -p）。'],['worktree','作業用的獨立副本。平行作業不會互相衝突。'],['OAuth（登入驗證）','從 /mcp 進行的，對外部服務的授權手續。'],['市集','外掛的發布來源。用 名稱@發布來源 指定。']];
+
+/* ===== 事件 ===== */
+els.chips.addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;cat=b.getAttribute('data-c');chips();render();var m=$('#main');if(window.scrollY>$('#barTop').offsetTop)window.scrollTo({top:$('#barTop').offsetTop,behavior:'auto'})});
+document.addEventListener('click',function(e){
+ var t=e.target;
+ var b=t.closest('.copy');if(b){if(b.hasAttribute('data-t'))copyText(b.getAttribute('data-t'));else copyText(I[+b.getAttribute('data-i')].code);return}
+ var r=t.closest('.runbtn');if(r){var box=r.nextElementSibling,open=r.getAttribute('aria-expanded')==='true';
+   if(open){r.setAttribute('aria-expanded','false');r.textContent='▶ 查看執行示意';box.hidden=true;simTok++}
+   else{r.setAttribute('aria-expanded','true');r.textContent='■ 關閉';box.hidden=false;playSim(box,I[+r.getAttribute('data-i')].sim)}return}
+ var mo=t.closest('.more');if(mo){var pre=mo.previousElementSibling,o=mo.getAttribute('aria-expanded')==='true';pre.classList.toggle('col',o);mo.setAttribute('aria-expanded',!o);mo.textContent=o?'顯示全文 ▼':'收合 ▲';return}
+ var s=t.closest('.seg button');if(s){setMode(s.getAttribute('data-m'));return}
+ var g=t.closest('#goals button');if(g){showGoal(+g.getAttribute('data-i'));return}
+ var go=t.closest('.go[data-c]');if(go){goCat(go.getAttribute('data-c'));return}
+ var tb=t.closest('.tab');if(tb){var k=tb.getAttribute('data-t');$$('.tab').forEach(function(x){x.setAttribute('aria-selected',x===tb)});$$('#panels .panel').forEach(function(p){p.hidden=p.getAttribute('data-p')!==k});if(k==='skillv')VIZ2.play();return}
+ var tn=t.closest('#tree button');if(tn){treeShow(tn.getAttribute('data-n'));return}
+ var tl=t.closest('#tl button');if(tl){clearTimeout(hookT);hookShow(+tl.getAttribute('data-i'));return}
+ if(t.closest('#tlplay')){hookPlay();return}
+ var sv=t.closest('#svcs button');if(sv){mcpShow(+sv.getAttribute('data-i'));return}
+ if(t.closest('#comp'))appMock(e);
+});
+['input','change'].forEach(function(ev){els.q.addEventListener(ev,render);els.biz.addEventListener(ev,render);els.lv.addEventListener(ev,render);els.hot.addEventListener(ev,render)});
+$('#gl').innerHTML=GL.map(function(g){return '<div><dt>'+esc(g[0])+'</dt><dd>'+esc(g[1])+'</dd></div>'}).join('');
+goals();viz();chips();render();setMode(mode);
+var io=null;
+function reveal(){if(!('IntersectionObserver' in window)){return}
+ if(!io)io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -6% 0px'});
+ $$('.dg,.sec h2').forEach(function(el){if(!el.classList.contains('in')){el.classList.add('rv');io.observe(el)}})}
+reveal();new MutationObserver(reveal).observe($('#main'),{childList:true});
+if(window.IntersectionObserver&&!reduce){var sv=$('#skstage');VIZ2.play()}
+})();
+</script>
